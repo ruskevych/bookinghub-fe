@@ -107,17 +107,12 @@ apps/v4/
 
 ### Installation
 
-1. **Clone the repository and navigate to the app**:
-   ```bash
-   cd apps/v4
-   ```
-
-2. **Install dependencies**:
+1. **Install dependencies**:
    ```bash
    pnpm install
    ```
 
-3. **Start the development server**:
+2. **Start the development server**:
    ```bash
    pnpm dev
    ```
