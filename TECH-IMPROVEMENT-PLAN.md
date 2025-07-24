@@ -6,13 +6,15 @@
 
 ### 🧱 Architecture
 
-* [ ] **Refactor Monolithic Page Components (Booking/Admin)**
+* [x] **Refactor Monolithic Page Components (Booking/Admin)**  
+  _Both BookingPage and AdminDashboard are already split into presentational components and logic hooks._
 
   * **What:** Break large pages like `BookingPage` and `AdminDashboard` into smaller presentational components and logic hooks.
   * **Why:** Improves maintainability, testing, and reusability. Avoids unreadable JSX blocks.
   * **How:** Use custom hooks (`useBookingData`, `useAdminStats`) and atomic components (`BookingTable`, `UserList`, `ServiceEditor`).
 
-* [ ] **Extract API and Data Logic from UI**
+* [x] **Extract API and Data Logic from UI**  
+  _All API/data logic is already extracted to hooks (e.g., useAdminDashboard, useBooking, useBookingConfirmation)._
 
   * **What:** Move all REST/GraphQL fetches and mutations to `useXYZ.ts` hooks.
   * **Why:** Separation of concerns, cleaner components, easier testing.
