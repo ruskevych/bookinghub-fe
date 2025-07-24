@@ -24,7 +24,8 @@
 
 ### 💾 State Management
 
-* [ ] **Adopt TanStack Query for Server State**
+* [x] **Adopt TanStack Query for Server State**  
+  _Admin dashboard now uses TanStack Query for all server state (services, bookings, staff, timeSlots)._
 
   * **What:** Use [TanStack Query](https://tanstack.com/query/latest) (`@tanstack/react-query`) to manage all server-side state (bookings, services, users, businesses).
   * **Why:** Enables caching, retry logic, background updates, and removes the need for manual loading/error handling.
