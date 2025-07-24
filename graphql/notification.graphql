@@ -1,0 +1,327 @@
+# Notification GraphQL operations
+# Based on notification patterns found in the codebase
+
+query GetNotifications($limit: Int, $page: Int, $type: NotificationType, $read: Boolean) {
+  notifications(limit: $limit, page: $page, type: $type, read: $read) {
+    items {
+      id
+      type
+      title
+      message
+      read
+      created_at
+      data
+      action_url
+    }
+    pagination {
+      ...PaginationFields
+    }
+  }
+}
+
+query GetUnreadNotificationCount {
+  unreadNotificationCount
+}
+
+mutation MarkNotificationAsRead($id: ID!) {
+  markNotificationAsRead(id: $id) {
+    success
+  }
+}
+
+mutation MarkAllNotificationsAsRead {
+  markAllNotificationsAsRead {
+    success
+    count
+  }
+}
+
+mutation DeleteNotification($id: ID!) {
+  deleteNotification(id: $id) {
+    success
+  }
+}
+
+# Notification preferences
+query GetNotificationPreferences {
+  notificationPreferences {
+    email {
+      bookingConfirmations
+      bookingReminders
+      bookingCancellations
+      bookingUpdates
+      marketing
+    }
+    sms {
+      bookingConfirmations
+      bookingReminders
+      bookingCancellations
+      bookingUpdates
+      marketing
+    }
+    push {
+      bookingConfirmations
+      bookingReminders
+      bookingCancellations
+      bookingUpdates
+      marketing
+    }
+    telegram {
+      bookingConfirmations
+      bookingReminders
+      bookingCancellations
+      bookingUpdates
+      marketing
+    }
+    whatsapp {
+      bookingConfirmations
+      bookingReminders
+      bookingCancellations
+      bookingUpdates
+      marketing
+    }
+  }
+}
+
+mutation UpdateNotificationPreferences($input: NotificationPreferencesInput!) {
+  updateNotificationPreferences(input: $input) {
+    success
+  }
+}
+
+# Business notification settings
+query GetBusinessNotificationSettings($businessId: ID!) {
+  businessNotificationSettings(businessId: $businessId) {
+    emailNotifications
+    smsNotifications
+    bookingConfirmations
+    bookingReminders
+    cancellationNotifications
+    newBookingNotifications
+    customerFeedbackNotifications
+    systemMaintenanceNotifications
+  }
+}
+
+mutation UpdateBusinessNotificationSettings($businessId: ID!, $input: BusinessNotificationSettingsInput!) {
+  updateBusinessNotificationSettings(businessId: $businessId, input: $input) {
+    success
+  }
+}
+
+# Admin notification management
+query GetAdminNotifications($limit: Int, $page: Int, $type: AdminNotificationType) {
+  adminNotifications(limit: $limit, page: $page, type: $type) {
+    items {
+      id
+      type
+      title
+      message
+      priority
+      created_at
+      data
+      action_url
+    }
+    pagination {
+      ...PaginationFields
+    }
+  }
+}
+
+mutation SendNotification($input: SendNotificationInput!) {
+  sendNotification(input: $input) {
+    success
+    notificationId
+  }
+}
+
+mutation SendBulkNotification($input: SendBulkNotificationInput!) {
+  sendBulkNotification(input: $input) {
+    success
+    sentCount
+    failedCount
+  }
+}
+
+# Notification templates
+query GetNotificationTemplates($type: NotificationTemplateType) {
+  notificationTemplates(type: $type) {
+    id
+    name
+    type
+    subject
+    body
+    variables
+    isActive
+  }
+}
+
+mutation CreateNotificationTemplate($input: CreateNotificationTemplateInput!) {
+  createNotificationTemplate(input: $input) {
+    id
+    name
+    type
+    subject
+    body
+    variables
+    isActive
+  }
+}
+
+mutation UpdateNotificationTemplate($id: ID!, $input: UpdateNotificationTemplateInput!) {
+  updateNotificationTemplate(id: $id, input: $input) {
+    id
+    name
+    type
+    subject
+    body
+    variables
+    isActive
+  }
+}
+
+mutation DeleteNotificationTemplate($id: ID!) {
+  deleteNotificationTemplate(id: $id) {
+    success
+  }
+}
+
+# Input types for mutations
+input NotificationPreferencesInput {
+  email: EmailNotificationPreferencesInput
+  sms: SmsNotificationPreferencesInput
+  push: PushNotificationPreferencesInput
+  telegram: TelegramNotificationPreferencesInput
+  whatsapp: WhatsappNotificationPreferencesInput
+}
+
+input EmailNotificationPreferencesInput {
+  bookingConfirmations: Boolean
+  bookingReminders: Boolean
+  bookingCancellations: Boolean
+  bookingUpdates: Boolean
+  marketing: Boolean
+}
+
+input SmsNotificationPreferencesInput {
+  bookingConfirmations: Boolean
+  bookingReminders: Boolean
+  bookingCancellations: Boolean
+  bookingUpdates: Boolean
+  marketing: Boolean
+}
+
+input PushNotificationPreferencesInput {
+  bookingConfirmations: Boolean
+  bookingReminders: Boolean
+  bookingCancellations: Boolean
+  bookingUpdates: Boolean
+  marketing: Boolean
+}
+
+input TelegramNotificationPreferencesInput {
+  bookingConfirmations: Boolean
+  bookingReminders: Boolean
+  bookingCancellations: Boolean
+  bookingUpdates: Boolean
+  marketing: Boolean
+}
+
+input WhatsappNotificationPreferencesInput {
+  bookingConfirmations: Boolean
+  bookingReminders: Boolean
+  bookingCancellations: Boolean
+  bookingUpdates: Boolean
+  marketing: Boolean
+}
+
+input BusinessNotificationSettingsInput {
+  emailNotifications: Boolean
+  smsNotifications: Boolean
+  bookingConfirmations: Boolean
+  bookingReminders: Boolean
+  cancellationNotifications: Boolean
+  newBookingNotifications: Boolean
+  customerFeedbackNotifications: Boolean
+  systemMaintenanceNotifications: Boolean
+}
+
+input SendNotificationInput {
+  userId: ID
+  businessId: ID
+  type: NotificationType!
+  title: String!
+  message: String!
+  data: JSON
+  actionUrl: String
+  priority: NotificationPriority
+}
+
+input SendBulkNotificationInput {
+  userIds: [ID!]
+  businessIds: [ID!]
+  type: NotificationType!
+  title: String!
+  message: String!
+  data: JSON
+  actionUrl: String
+  priority: NotificationPriority
+}
+
+input CreateNotificationTemplateInput {
+  name: String!
+  type: NotificationTemplateType!
+  subject: String!
+  body: String!
+  variables: [String!]
+  isActive: Boolean
+}
+
+input UpdateNotificationTemplateInput {
+  name: String
+  subject: String
+  body: String
+  variables: [String!]
+  isActive: Boolean
+}
+
+enum NotificationType {
+  BOOKING_CONFIRMATION
+  BOOKING_REMINDER
+  BOOKING_CANCELLATION
+  BOOKING_UPDATE
+  PAYMENT_CONFIRMATION
+  PAYMENT_FAILED
+  VERIFICATION_APPROVED
+  VERIFICATION_REJECTED
+  SYSTEM_MAINTENANCE
+  MARKETING
+  CUSTOMER_FEEDBACK
+}
+
+enum AdminNotificationType {
+  SYSTEM_ALERT
+  SECURITY_ALERT
+  PERFORMANCE_ALERT
+  USER_REPORT
+  BUSINESS_REPORT
+  PAYMENT_ISSUE
+  VERIFICATION_REQUEST
+}
+
+enum NotificationTemplateType {
+  EMAIL
+  SMS
+  PUSH
+  TELEGRAM
+  WHATSAPP
+}
+
+enum NotificationPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+scalar JSON 

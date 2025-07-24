@@ -1,0 +1,182 @@
+# Service GraphQL operations
+# Based on serviceService patterns and booking wizard requirements
+
+query GetServices($limit: Int, $page: Int, $businessId: ID, $category: String) {
+  services(limit: $limit, page: $page, businessId: $businessId, category: $category) {
+    items {
+      ...ServiceFields
+    }
+    pagination {
+      ...PaginationFields
+    }
+  }
+}
+
+query GetService($id: ID!) {
+  service(id: $id) {
+    ...ServiceFields
+  }
+}
+
+query GetServiceWithProvider($id: ID!) {
+  service(id: $id) {
+    ...ServiceWithProviderFields
+  }
+}
+
+query GetServiceTimeSlots($serviceId: ID!) {
+  serviceTimeSlots(serviceId: $serviceId) {
+    ...TimeSlotFields
+  }
+}
+
+query GetServiceCategories {
+  serviceCategories {
+    id
+    name
+    description
+    icon
+    popular_services {
+      id
+      name
+      price
+    }
+  }
+}
+
+mutation CreateService($input: CreateServiceInput!) {
+  createService(input: $input) {
+    ...ServiceFields
+  }
+}
+
+mutation UpdateService($id: ID!, $input: UpdateServiceInput!) {
+  updateService(id: $id, input: $input) {
+    ...ServiceFields
+  }
+}
+
+mutation DeleteService($id: ID!) {
+  deleteService(id: $id) {
+    success
+    message
+  }
+}
+
+# Time slot management
+query GetTimeSlots($limit: Int, $page: Int, $serviceId: ID, $businessId: ID) {
+  timeSlots(limit: $limit, page: $page, serviceId: $serviceId, businessId: $businessId) {
+    items {
+      ...TimeSlotFields
+    }
+    pagination {
+      ...PaginationFields
+    }
+  }
+}
+
+query GetTimeSlot($id: ID!) {
+  timeSlot(id: $id) {
+    ...TimeSlotFields
+  }
+}
+
+mutation CreateTimeSlot($input: CreateTimeSlotInput!) {
+  createTimeSlot(input: $input) {
+    ...TimeSlotFields
+  }
+}
+
+mutation UpdateTimeSlot($id: ID!, $input: UpdateTimeSlotInput!) {
+  updateTimeSlot(id: $id, input: $input) {
+    ...TimeSlotFields
+  }
+}
+
+mutation DeleteTimeSlot($id: ID!) {
+  deleteTimeSlot(id: $id) {
+    success
+    message
+  }
+}
+
+# Staff management
+query GetStaffMembers($businessId: ID!) {
+  staffMembers(businessId: $businessId) {
+    ...StaffMemberFields
+  }
+}
+
+query GetAvailableStaff($serviceId: ID!, $date: String!, $timeSlotId: ID!) {
+  availableStaff(serviceId: $serviceId, date: $date, timeSlotId: $timeSlotId) {
+    ...StaffMemberFields
+  }
+}
+
+mutation CreateStaffMember($input: CreateStaffMemberInput!) {
+  createStaffMember(input: $input) {
+    ...StaffMemberFields
+  }
+}
+
+mutation UpdateStaffMember($id: ID!, $input: UpdateStaffMemberInput!) {
+  updateStaffMember(id: $id, input: $input) {
+    ...StaffMemberFields
+  }
+}
+
+mutation DeleteStaffMember($id: ID!) {
+  deleteStaffMember(id: $id) {
+    success
+    message
+  }
+}
+
+# Input types for mutations
+input CreateServiceInput {
+  business_id: ID!
+  name: String!
+  description: String
+  duration: Int!
+  price: Float!
+  category: String
+}
+
+input UpdateServiceInput {
+  name: String
+  description: String
+  duration: Int
+  price: Float
+  category: String
+}
+
+input CreateTimeSlotInput {
+  service_id: ID!
+  business_id: ID!
+  start_time: String!
+  end_time: String!
+  is_available: Boolean!
+}
+
+input UpdateTimeSlotInput {
+  start_time: String
+  end_time: String
+  is_available: Boolean
+}
+
+input CreateStaffMemberInput {
+  name: String!
+  email: String!
+  phone: String!
+  role: String!
+  specialties: [String!]
+  business_id: ID!
+}
+
+input UpdateStaffMemberInput {
+  name: String
+  email: String
+  phone: String
+  role: String
+  specialties: [String!]
+} 

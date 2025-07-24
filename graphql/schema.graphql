@@ -1,0 +1,653 @@
+# Complete GraphQL Schema for the Booking Application
+# This schema defines all types, inputs, and enums used across the application
+
+# Core Types
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  phone: String
+  telegram_id: Int
+  whatsapp_id: String
+  business_id: ID
+  created_at: String!
+  updated_at: String!
+}
+
+type Business {
+  id: ID!
+  name: String!
+  description: String
+  owner_id: ID!
+  timezone: String!
+  contact_info: String
+  created_at: String!
+  updated_at: String!
+}
+
+type Service {
+  id: ID!
+  business_id: ID!
+  name: String!
+  description: String
+  duration: Int!
+  price: Float!
+  created_at: String!
+  updated_at: String!
+}
+
+type TimeSlot {
+  id: ID!
+  service_id: ID!
+  business_id: ID!
+  start_time: String!
+  end_time: String!
+  is_available: Boolean!
+  created_at: String!
+  updated_at: String!
+}
+
+type Booking {
+  id: ID!
+  user_id: ID!
+  business_id: ID!
+  service_id: ID!
+  time_slot_id: ID!
+  status: BookingStatus!
+  service_name: String!
+  start_time: String!
+  end_time: String!
+  notes: String
+  created_at: String!
+  updated_at: String!
+}
+
+type Provider {
+  id: ID!
+  name: String!
+  email: String!
+  phone: String!
+  profileImage: String!
+  bio: String!
+  rating: Float!
+  totalReviews: Int!
+  yearsExperience: Int!
+  businessName: String!
+  category: String!
+  startingPrice: Float!
+  distance: String!
+  available: String!
+  isFavorite: Boolean!
+  description: String!
+  address: String!
+  city: String!
+  state: String!
+  zipCode: String!
+  responseTime: String
+  languages: [String!]
+  nextAvailableSlot: NextAvailableSlot
+  availabilityWindows: AvailabilityWindows
+  location: Location!
+  verificationStatus: VerificationStatus!
+  businessHours: BusinessHours!
+}
+
+type NextAvailableSlot {
+  date: String!
+  time: String!
+}
+
+type AvailabilityWindows {
+  today: Boolean!
+  tomorrow: Boolean!
+  thisWeek: Boolean!
+  nextWeek: Boolean!
+}
+
+type Location {
+  address: String!
+  city: String!
+  state: String!
+  zipCode: String!
+  serviceRadius: Int!
+}
+
+type VerificationStatus {
+  isVerified: Boolean!
+  backgroundCheck: Boolean!
+  phoneVerified: Boolean!
+  emailVerified: Boolean!
+  licenseVerified: Boolean!
+  badges: [String!]!
+}
+
+type BusinessHours {
+  monday: DayHours!
+  tuesday: DayHours!
+  wednesday: DayHours!
+  thursday: DayHours!
+  friday: DayHours!
+  saturday: DayHours!
+  sunday: DayHours!
+}
+
+type DayHours {
+  isOpen: Boolean!
+  openTime: String
+  closeTime: String
+}
+
+type StaffMember {
+  id: ID!
+  name: String!
+  image: String
+  specialties: [String!]!
+  rating: Float!
+  reviews_count: Int!
+  available_times: [String!]
+}
+
+type Review {
+  id: ID!
+  customerId: ID!
+  customerName: String!
+  customerAvatar: String
+  rating: Int!
+  comment: String!
+  serviceId: ID!
+  serviceName: String!
+  createdAt: String!
+  verified: Boolean!
+  helpful: Int
+  providerResponse: ProviderResponse
+}
+
+type ProviderResponse {
+  message: String!
+  createdAt: String!
+}
+
+type AvailabilitySlot {
+  id: ID!
+  date: String!
+  startTime: String!
+  endTime: String!
+  status: AvailabilityStatus!
+  serviceId: ID
+}
+
+type GalleryImage {
+  id: ID!
+  url: String!
+  caption: String
+  category: GalleryCategory!
+  isMain: Boolean!
+}
+
+type Certification {
+  id: ID!
+  name: String!
+  issuer: String!
+  issueDate: String!
+  expiryDate: String
+  credentialId: String
+  isVerified: Boolean!
+}
+
+type UserPreferences {
+  notification_enabled: Boolean!
+  email_notifications: Boolean!
+  sms_notifications: Boolean!
+  telegram_notifications: Boolean!
+  whatsapp_notifications: Boolean!
+  preferred_language: String!
+  timezone: String!
+}
+
+type PaginationInfo {
+  total: Int!
+  page: Int!
+  per_page: Int!
+  total_pages: Int!
+  has_next_page: Boolean!
+  has_prev_page: Boolean!
+}
+
+# Response Types
+type PaginatedResponse {
+  items: [Any!]!
+  pagination: PaginationInfo!
+}
+
+type AuthResponse {
+  access_token: String!
+  refresh_token: String!
+  user: User!
+}
+
+type BookingConfirmation {
+  booking: Booking!
+  calendarLinks: CalendarLinks!
+  qrCode: String!
+}
+
+type CalendarLinks {
+  google: String!
+  outlook: String!
+  ical: String!
+}
+
+type BusinessStats {
+  totalBookings: Int!
+  totalRevenue: Float!
+  averageRating: Float!
+  totalCustomers: Int!
+  monthlyGrowth: Float!
+}
+
+type ProviderStats {
+  totalBookings: Int!
+  completedBookings: Int!
+  cancelationRate: Float!
+  averageResponseTime: String!
+  repeatCustomerRate: Float!
+  averageRating: Float!
+  totalReviews: Int!
+}
+
+type BusinessAnalytics {
+  revenue: RevenueMetrics!
+  bookings: BookingMetrics!
+  customers: CustomerMetrics!
+  services: ServiceMetrics!
+  staff: StaffMetrics!
+}
+
+type RevenueMetrics {
+  total: Float!
+  breakdown: [RevenueBreakdown!]!
+}
+
+type RevenueBreakdown {
+  date: String!
+  amount: Float!
+}
+
+type BookingMetrics {
+  total: Int!
+  confirmed: Int!
+  cancelled: Int!
+  completed: Int!
+  breakdown: [BookingBreakdown!]!
+}
+
+type BookingBreakdown {
+  date: String!
+  count: Int!
+}
+
+type CustomerMetrics {
+  total: Int!
+  new: Int!
+  returning: Int!
+  breakdown: [CustomerBreakdown!]!
+}
+
+type CustomerBreakdown {
+  date: String!
+  count: Int!
+}
+
+type ServiceMetrics {
+  topServices: [TopService!]!
+}
+
+type TopService {
+  serviceId: ID!
+  serviceName: String!
+  bookings: Int!
+  revenue: Float!
+}
+
+type StaffMetrics {
+  topStaff: [TopStaff!]!
+}
+
+type TopStaff {
+  staffId: ID!
+  staffName: String!
+  bookings: Int!
+  rating: Float!
+}
+
+type AdminDashboard {
+  overview: DashboardOverview!
+  recentActivity: RecentActivity!
+  charts: DashboardCharts!
+}
+
+type DashboardOverview {
+  totalUsers: Int!
+  totalBusinesses: Int!
+  totalBookings: Int!
+  totalRevenue: Float!
+  activeProviders: Int!
+  pendingVerifications: Int!
+}
+
+type RecentActivity {
+  recentBookings: [RecentBooking!]!
+  recentUsers: [RecentUser!]!
+  recentBusinesses: [RecentBusiness!]!
+}
+
+type RecentBooking {
+  id: ID!
+  service_name: String!
+  user_name: String!
+  created_at: String!
+  status: BookingStatus!
+}
+
+type RecentUser {
+  id: ID!
+  name: String!
+  email: String!
+  created_at: String!
+}
+
+type RecentBusiness {
+  id: ID!
+  name: String!
+  owner_name: String!
+  created_at: String!
+}
+
+type DashboardCharts {
+  bookingsByStatus: [BookingStatusCount!]!
+  revenueByMonth: [RevenueByMonth!]!
+  userGrowth: [UserGrowth!]!
+}
+
+type BookingStatusCount {
+  status: BookingStatus!
+  count: Int!
+}
+
+type RevenueByMonth {
+  month: String!
+  revenue: Float!
+}
+
+type UserGrowth {
+  month: String!
+  newUsers: Int!
+  totalUsers: Int!
+}
+
+type Notification {
+  id: ID!
+  type: NotificationType!
+  title: String!
+  message: String!
+  read: Boolean!
+  created_at: String!
+  data: JSON
+  action_url: String
+}
+
+type PaymentMethod {
+  id: ID!
+  type: PaymentMethodType!
+  name: String!
+  last4: String!
+  brand: String!
+  expiryMonth: Int!
+  expiryYear: Int!
+  isDefault: Boolean!
+  isActive: Boolean!
+}
+
+type Transaction {
+  id: ID!
+  type: TransactionType!
+  amount: Float!
+  currency: String!
+  status: TransactionStatus!
+  description: String!
+  created_at: String!
+  updated_at: String!
+  paymentMethod: PaymentMethod!
+  booking: Booking
+  refunds: [Refund!]!
+}
+
+type Refund {
+  id: ID!
+  amount: Float!
+  reason: String!
+  created_at: String!
+  status: TransactionStatus!
+}
+
+type Payout {
+  id: ID!
+  amount: Float!
+  currency: String!
+  status: PayoutStatus!
+  scheduledDate: String!
+  processedDate: String
+  bankAccount: BankAccount!
+}
+
+type BankAccount {
+  id: ID!
+  accountHolderName: String!
+  accountNumber: String!
+  routingNumber: String!
+  bankName: String!
+  accountType: BankAccountType!
+  isDefault: Boolean!
+  isVerified: Boolean!
+}
+
+type PayoutSummary {
+  totalEarnings: Float!
+  pendingPayouts: Float!
+  completedPayouts: Float!
+  nextPayoutDate: String!
+  nextPayoutAmount: Float!
+}
+
+type SystemHealth {
+  status: String!
+  uptime: String!
+  responseTime: Float!
+  errorRate: Float!
+  activeConnections: Int!
+  databaseStatus: String!
+  cacheStatus: String!
+  queueStatus: String!
+}
+
+type SystemLog {
+  id: ID!
+  level: LogLevel!
+  message: String!
+  timestamp: String!
+  userId: ID
+  requestId: ID
+  metadata: JSON
+}
+
+# Enums
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum AvailabilityStatus {
+  AVAILABLE
+  BUSY
+  BLOCKED
+}
+
+enum GalleryCategory {
+  BEFORE_AFTER
+  PORTFOLIO
+  WORKSPACE
+  CERTIFICATES
+}
+
+enum PaymentMethodType {
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_ACCOUNT
+  PAYPAL
+  APPLE_PAY
+  GOOGLE_PAY
+  CASH
+}
+
+enum TransactionType {
+  PAYMENT
+  REFUND
+  PAYOUT
+  FEE
+}
+
+enum TransactionStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum PayoutSchedule {
+  DAILY
+  WEEKLY
+  MONTHLY
+  MANUAL
+}
+
+enum BankAccountType {
+  CHECKING
+  SAVINGS
+}
+
+enum NotificationType {
+  BOOKING_CONFIRMATION
+  BOOKING_REMINDER
+  BOOKING_CANCELLATION
+  BOOKING_UPDATE
+  PAYMENT_CONFIRMATION
+  PAYMENT_FAILED
+  VERIFICATION_APPROVED
+  VERIFICATION_REJECTED
+  SYSTEM_MAINTENANCE
+  MARKETING
+  CUSTOMER_FEEDBACK
+}
+
+enum AdminNotificationType {
+  SYSTEM_ALERT
+  SECURITY_ALERT
+  PERFORMANCE_ALERT
+  USER_REPORT
+  BUSINESS_REPORT
+  PAYMENT_ISSUE
+  VERIFICATION_REQUEST
+}
+
+enum NotificationTemplateType {
+  EMAIL
+  SMS
+  PUSH
+  TELEGRAM
+  WHATSAPP
+}
+
+enum NotificationPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum UserRole {
+  USER
+  PROVIDER
+  BUSINESS_OWNER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum BusinessStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING
+  INACTIVE
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+  UNVERIFIED
+}
+
+enum VerificationType {
+  BACKGROUND_CHECK
+  LICENSE_VERIFICATION
+  PHONE_VERIFICATION
+  EMAIL_VERIFICATION
+}
+
+enum AnalyticsPeriod {
+  DAY
+  WEEK
+  MONTH
+  QUARTER
+  YEAR
+}
+
+enum ReportType {
+  REVENUE
+  BOOKINGS
+  CUSTOMERS
+  SERVICES
+  STAFF
+  COMPREHENSIVE
+}
+
+enum AdminReportType {
+  USER_ACTIVITY
+  BUSINESS_PERFORMANCE
+  BOOKING_ANALYTICS
+  REVENUE_REPORT
+  SYSTEM_METRICS
+  SECURITY_AUDIT
+}
+
+enum LogLevel {
+  DEBUG
+  INFO
+  WARN
+  ERROR
+  FATAL
+}
+
+# Scalars
+scalar JSON
+scalar Any 

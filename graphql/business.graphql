@@ -1,0 +1,258 @@
+# Business GraphQL operations
+# Based on businessService patterns and admin dashboard requirements
+
+query GetBusinesses($limit: Int, $page: Int, $ownerId: ID) {
+  businesses(limit: $limit, page: $page, ownerId: $ownerId) {
+    items {
+      ...BusinessFields
+      owner {
+        ...UserFields
+      }
+    }
+    pagination {
+      ...PaginationFields
+    }
+  }
+}
+
+query GetBusiness($id: ID!) {
+  business(id: $id) {
+    ...BusinessFields
+    owner {
+      ...UserFields
+    }
+    services {
+      ...ServiceFields
+    }
+    staff {
+      ...StaffMemberFields
+    }
+  }
+}
+
+query GetMyBusiness {
+  myBusiness {
+    ...BusinessFields
+    owner {
+      ...UserFields
+    }
+    services {
+      ...ServiceFields
+    }
+    staff {
+      ...StaffMemberFields
+    }
+    stats {
+      totalBookings
+      totalRevenue
+      averageRating
+      totalCustomers
+      monthlyGrowth
+    }
+  }
+}
+
+mutation CreateBusiness($input: CreateBusinessInput!) {
+  createBusiness(input: $input) {
+    ...BusinessFields
+  }
+}
+
+mutation UpdateBusiness($id: ID!, $input: UpdateBusinessInput!) {
+  updateBusiness(id: $id, input: $input) {
+    ...BusinessFields
+  }
+}
+
+mutation DeleteBusiness($id: ID!) {
+  deleteBusiness(id: $id) {
+    success
+    message
+  }
+}
+
+# Business settings and configuration
+query GetBusinessSettings($businessId: ID!) {
+  businessSettings(businessId: $businessId) {
+    businessHours {
+      monday {
+        isOpen
+        openTime
+        closeTime
+      }
+      tuesday {
+        isOpen
+        openTime
+        closeTime
+      }
+      wednesday {
+        isOpen
+        openTime
+        closeTime
+      }
+      thursday {
+        isOpen
+        openTime
+        closeTime
+      }
+      friday {
+        isOpen
+        openTime
+        closeTime
+      }
+      saturday {
+        isOpen
+        openTime
+        closeTime
+      }
+      sunday {
+        isOpen
+        openTime
+        closeTime
+      }
+    }
+    notificationSettings {
+      emailNotifications
+      smsNotifications
+      bookingConfirmations
+      bookingReminders
+      cancellationNotifications
+    }
+    paymentSettings {
+      acceptedPaymentMethods
+      autoConfirmBookings
+      requireDeposit
+      depositPercentage
+    }
+    bookingSettings {
+      advanceBookingDays
+      cancellationPolicy
+      lateCancellationFee
+      noShowPolicy
+    }
+  }
+}
+
+mutation UpdateBusinessSettings($businessId: ID!, $input: BusinessSettingsInput!) {
+  updateBusinessSettings(businessId: $businessId, input: $input) {
+    success
+    message
+  }
+}
+
+# Business analytics and reporting
+query GetBusinessAnalytics($businessId: ID!, $period: AnalyticsPeriod!, $startDate: String, $endDate: String) {
+  businessAnalytics(businessId: $businessId, period: $period, startDate: $startDate, endDate: $endDate) {
+    revenue {
+      total
+      breakdown {
+        date
+        amount
+      }
+    }
+    bookings {
+      total
+      confirmed
+      cancelled
+      completed
+      breakdown {
+        date
+        count
+      }
+    }
+    customers {
+      total
+      new
+      returning
+      breakdown {
+        date
+        count
+      }
+    }
+    services {
+      topServices {
+        serviceId
+        serviceName
+        bookings
+        revenue
+      }
+    }
+    staff {
+      topStaff {
+        staffId
+        staffName
+        bookings
+        rating
+      }
+    }
+  }
+}
+
+query GetBusinessReports($businessId: ID!, $reportType: ReportType!, $startDate: String!, $endDate: String!) {
+  businessReports(businessId: $businessId, reportType: $reportType, startDate: $startDate, endDate: $endDate) {
+    reportData
+    generatedAt
+    downloadUrl
+  }
+}
+
+# Input types for mutations
+input CreateBusinessInput {
+  name: String!
+  description: String
+  timezone: String!
+  contact_info: String
+}
+
+input UpdateBusinessInput {
+  name: String
+  description: String
+  timezone: String
+  contact_info: String
+}
+
+input BusinessSettingsInput {
+  businessHours: BusinessHoursInput
+  notificationSettings: NotificationSettingsInput
+  paymentSettings: PaymentSettingsInput
+  bookingSettings: BookingSettingsInput
+}
+
+input NotificationSettingsInput {
+  emailNotifications: Boolean
+  smsNotifications: Boolean
+  bookingConfirmations: Boolean
+  bookingReminders: Boolean
+  cancellationNotifications: Boolean
+}
+
+input PaymentSettingsInput {
+  acceptedPaymentMethods: [String!]
+  autoConfirmBookings: Boolean
+  requireDeposit: Boolean
+  depositPercentage: Float
+}
+
+input BookingSettingsInput {
+  advanceBookingDays: Int
+  cancellationPolicy: String
+  lateCancellationFee: Float
+  noShowPolicy: String
+}
+
+enum AnalyticsPeriod {
+  DAY
+  WEEK
+  MONTH
+  QUARTER
+  YEAR
+}
+
+enum ReportType {
+  REVENUE
+  BOOKINGS
+  CUSTOMERS
+  SERVICES
+  STAFF
+  COMPREHENSIVE
+} 

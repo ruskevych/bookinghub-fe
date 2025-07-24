@@ -1,0 +1,400 @@
+# Payment GraphQL operations
+# Based on payment patterns found in booking flows and business settings
+
+query GetPaymentMethods($userId: ID) {
+  paymentMethods(userId: $userId) {
+    id
+    type
+    name
+    last4
+    brand
+    expiryMonth
+    expiryYear
+    isDefault
+    isActive
+  }
+}
+
+query GetDefaultPaymentMethod($userId: ID) {
+  defaultPaymentMethod(userId: $userId) {
+    id
+    type
+    name
+    last4
+    brand
+    expiryMonth
+    expiryYear
+    isDefault
+  }
+}
+
+mutation AddPaymentMethod($input: AddPaymentMethodInput!) {
+  addPaymentMethod(input: $input) {
+    id
+    type
+    name
+    last4
+    brand
+    expiryMonth
+    expiryYear
+    isDefault
+  }
+}
+
+mutation UpdatePaymentMethod($id: ID!, $input: UpdatePaymentMethodInput!) {
+  updatePaymentMethod(id: $id, input: $input) {
+    id
+    type
+    name
+    last4
+    brand
+    expiryMonth
+    expiryYear
+    isDefault
+  }
+}
+
+mutation DeletePaymentMethod($id: ID!) {
+  deletePaymentMethod(id: $id) {
+    success
+    message
+  }
+}
+
+mutation SetDefaultPaymentMethod($id: ID!) {
+  setDefaultPaymentMethod(id: $id) {
+    success
+  }
+}
+
+# Payment processing
+mutation ProcessPayment($input: ProcessPaymentInput!) {
+  processPayment(input: $input) {
+    success
+    transactionId
+    amount
+    currency
+    status
+    paymentMethod {
+      id
+      type
+      last4
+      brand
+    }
+    error {
+      code
+      message
+    }
+  }
+}
+
+mutation ProcessBookingPayment($bookingId: ID!, $paymentMethodId: ID!, $amount: Float!) {
+  processBookingPayment(bookingId: $bookingId, paymentMethodId: $paymentMethodId, amount: $amount) {
+    success
+    transactionId
+    amount
+    currency
+    status
+    booking {
+      ...BookingFields
+    }
+    error {
+      code
+      message
+    }
+  }
+}
+
+mutation RefundPayment($transactionId: ID!, $amount: Float, $reason: String) {
+  refundPayment(transactionId: $transactionId, amount: $amount, reason: $reason) {
+    success
+    refundId
+    amount
+    status
+    error {
+      code
+      message
+    }
+  }
+}
+
+# Transaction history
+query GetTransactions($limit: Int, $page: Int, $type: TransactionType, $status: TransactionStatus) {
+  transactions(limit: $limit, page: $page, type: $type, status: $status) {
+    items {
+      id
+      type
+      amount
+      currency
+      status
+      description
+      created_at
+      paymentMethod {
+        id
+        type
+        last4
+        brand
+      }
+      booking {
+        id
+        service_name
+        start_time
+      }
+    }
+    pagination {
+      ...PaginationFields
+    }
+  }
+}
+
+query GetTransaction($id: ID!) {
+  transaction(id: $id) {
+    id
+    type
+    amount
+    currency
+    status
+    description
+    created_at
+    updated_at
+    paymentMethod {
+      id
+      type
+      last4
+      brand
+    }
+    booking {
+      ...BookingFields
+    }
+    refunds {
+      id
+      amount
+      reason
+      created_at
+      status
+    }
+  }
+}
+
+# Business payment settings
+query GetBusinessPaymentSettings($businessId: ID!) {
+  businessPaymentSettings(businessId: $businessId) {
+    acceptedPaymentMethods
+    autoConfirmBookings
+    requireDeposit
+    depositPercentage
+    cancellationRefundPolicy
+    processingFees {
+      percentage
+      fixedAmount
+    }
+    payoutSchedule
+    minimumPayoutAmount
+    taxSettings {
+      taxRate
+      taxIncluded
+      taxNumber
+    }
+  }
+}
+
+mutation UpdateBusinessPaymentSettings($businessId: ID!, $input: BusinessPaymentSettingsInput!) {
+  updateBusinessPaymentSettings(businessId: $businessId, input: $input) {
+    success
+  }
+}
+
+# Payouts
+query GetPayouts($limit: Int, $page: Int, $status: PayoutStatus) {
+  payouts(limit: $limit, page: $page, status: $status) {
+    items {
+      id
+      amount
+      currency
+      status
+      scheduledDate
+      processedDate
+      bankAccount {
+        id
+        last4
+        bankName
+      }
+    }
+    pagination {
+      ...PaginationFields
+    }
+  }
+}
+
+query GetPayoutSummary {
+  payoutSummary {
+    totalEarnings
+    pendingPayouts
+    completedPayouts
+    nextPayoutDate
+    nextPayoutAmount
+  }
+}
+
+mutation RequestPayout($amount: Float!) {
+  requestPayout(amount: $amount) {
+    success
+    payoutId
+    scheduledDate
+  }
+}
+
+# Business bank accounts
+query GetBankAccounts($businessId: ID!) {
+  bankAccounts(businessId: $businessId) {
+    id
+    accountHolderName
+    accountNumber
+    routingNumber
+    bankName
+    accountType
+    isDefault
+    isVerified
+  }
+}
+
+mutation AddBankAccount($input: AddBankAccountInput!) {
+  addBankAccount(input: $input) {
+    id
+    accountHolderName
+    accountNumber
+    routingNumber
+    bankName
+    accountType
+    isDefault
+  }
+}
+
+mutation UpdateBankAccount($id: ID!, $input: UpdateBankAccountInput!) {
+  updateBankAccount(id: $id, input: $input) {
+    id
+    accountHolderName
+    accountNumber
+    routingNumber
+    bankName
+    accountType
+    isDefault
+  }
+}
+
+mutation DeleteBankAccount($id: ID!) {
+  deleteBankAccount(id: $id) {
+    success
+  }
+}
+
+mutation SetDefaultBankAccount($id: ID!) {
+  setDefaultBankAccount(id: $id) {
+    success
+  }
+}
+
+# Input types for mutations
+input AddPaymentMethodInput {
+  type: PaymentMethodType!
+  token: String!
+  isDefault: Boolean
+}
+
+input UpdatePaymentMethodInput {
+  name: String
+  isDefault: Boolean
+}
+
+input ProcessPaymentInput {
+  amount: Float!
+  currency: String!
+  paymentMethodId: ID!
+  description: String
+  metadata: JSON
+}
+
+input BusinessPaymentSettingsInput {
+  acceptedPaymentMethods: [PaymentMethodType!]
+  autoConfirmBookings: Boolean
+  requireDeposit: Boolean
+  depositPercentage: Float
+  cancellationRefundPolicy: String
+  processingFees: ProcessingFeesInput
+  payoutSchedule: PayoutSchedule
+  minimumPayoutAmount: Float
+  taxSettings: TaxSettingsInput
+}
+
+input ProcessingFeesInput {
+  percentage: Float
+  fixedAmount: Float
+}
+
+input TaxSettingsInput {
+  taxRate: Float
+  taxIncluded: Boolean
+  taxNumber: String
+}
+
+input AddBankAccountInput {
+  businessId: ID!
+  accountHolderName: String!
+  accountNumber: String!
+  routingNumber: String!
+  bankName: String!
+  accountType: BankAccountType!
+  isDefault: Boolean
+}
+
+input UpdateBankAccountInput {
+  accountHolderName: String
+  isDefault: Boolean
+}
+
+enum PaymentMethodType {
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_ACCOUNT
+  PAYPAL
+  APPLE_PAY
+  GOOGLE_PAY
+  CASH
+}
+
+enum TransactionType {
+  PAYMENT
+  REFUND
+  PAYOUT
+  FEE
+}
+
+enum TransactionStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum PayoutSchedule {
+  DAILY
+  WEEKLY
+  MONTHLY
+  MANUAL
+}
+
+enum BankAccountType {
+  CHECKING
+  SAVINGS
+}
+
+scalar JSON 

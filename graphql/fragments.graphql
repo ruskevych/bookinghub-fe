@@ -1,0 +1,236 @@
+# Reusable GraphQL fragments for consistent field selection
+
+fragment UserFields on User {
+  id
+  name
+  email
+  phone
+  telegram_id
+  whatsapp_id
+  business_id
+  created_at
+  updated_at
+}
+
+fragment BusinessFields on Business {
+  id
+  name
+  description
+  owner_id
+  timezone
+  contact_info
+  created_at
+  updated_at
+}
+
+fragment ServiceFields on Service {
+  id
+  business_id
+  name
+  description
+  duration
+  price
+  created_at
+  updated_at
+}
+
+fragment TimeSlotFields on TimeSlot {
+  id
+  service_id
+  business_id
+  start_time
+  end_time
+  is_available
+  created_at
+  updated_at
+}
+
+fragment BookingFields on Booking {
+  id
+  user_id
+  business_id
+  service_id
+  time_slot_id
+  status
+  service_name
+  start_time
+  end_time
+  notes
+  created_at
+  updated_at
+}
+
+fragment ProviderFields on Provider {
+  id
+  name
+  email
+  phone
+  profileImage
+  bio
+  rating
+  totalReviews
+  yearsExperience
+  businessName
+  category
+  startingPrice
+  distance
+  available
+  isFavorite
+  description
+  address
+  city
+  state
+  zipCode
+  responseTime
+  languages
+  nextAvailableSlot {
+    date
+    time
+  }
+  availabilityWindows {
+    today
+    tomorrow
+    thisWeek
+    nextWeek
+  }
+  location {
+    address
+    city
+    state
+    zipCode
+    serviceRadius
+  }
+  verificationStatus {
+    isVerified
+    backgroundCheck
+    phoneVerified
+    emailVerified
+    licenseVerified
+    badges
+  }
+  businessHours {
+    monday {
+      isOpen
+      openTime
+      closeTime
+    }
+    tuesday {
+      isOpen
+      openTime
+      closeTime
+    }
+    wednesday {
+      isOpen
+      openTime
+      closeTime
+    }
+    thursday {
+      isOpen
+      openTime
+      closeTime
+    }
+    friday {
+      isOpen
+      openTime
+      closeTime
+    }
+    saturday {
+      isOpen
+      openTime
+      closeTime
+    }
+    sunday {
+      isOpen
+      openTime
+      closeTime
+    }
+  }
+}
+
+fragment ServiceWithProviderFields on Service {
+  ...ServiceFields
+  provider_name
+  provider_rating
+  provider_image
+  add_ons {
+    id
+    name
+    description
+    price
+    duration
+  }
+}
+
+fragment StaffMemberFields on StaffMember {
+  id
+  name
+  image
+  specialties
+  rating
+  reviews_count
+  available_times
+}
+
+fragment ReviewFields on Review {
+  id
+  customerId
+  customerName
+  customerAvatar
+  rating
+  comment
+  serviceId
+  serviceName
+  createdAt
+  verified
+  helpful
+  providerResponse {
+    message
+    createdAt
+  }
+}
+
+fragment AvailabilitySlotFields on AvailabilitySlot {
+  id
+  date
+  startTime
+  endTime
+  status
+  serviceId
+}
+
+fragment GalleryImageFields on GalleryImage {
+  id
+  url
+  caption
+  category
+  isMain
+}
+
+fragment CertificationFields on Certification {
+  id
+  name
+  issuer
+  issueDate
+  expiryDate
+  credentialId
+  isVerified
+}
+
+fragment UserPreferencesFields on UserPreferences {
+  notification_enabled
+  email_notifications
+  sms_notifications
+  telegram_notifications
+  whatsapp_notifications
+  preferred_language
+  timezone
+}
+
+fragment PaginationFields on PaginationInfo {
+  total
+  page
+  per_page
+  total_pages
+  has_next_page
+  has_prev_page
+} 

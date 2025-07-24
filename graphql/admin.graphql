@@ -1,0 +1,339 @@
+# Admin GraphQL operations
+# Based on admin dashboard components and use-admin-dashboard.ts patterns
+
+query GetAdminDashboard {
+  adminDashboard {
+    overview {
+      totalUsers
+      totalBusinesses
+      totalBookings
+      totalRevenue
+      activeProviders
+      pendingVerifications
+    }
+    recentActivity {
+      recentBookings {
+        id
+        service_name
+        user_name
+        created_at
+        status
+      }
+      recentUsers {
+        id
+        name
+        email
+        created_at
+      }
+      recentBusinesses {
+        id
+        name
+        owner_name
+        created_at
+      }
+    }
+    charts {
+      bookingsByStatus {
+        status
+        count
+      }
+      revenueByMonth {
+        month
+        revenue
+      }
+      userGrowth {
+        month
+        newUsers
+        totalUsers
+      }
+    }
+  }
+}
+
+query GetAdminBookings($limit: Int, $page: Int, $status: BookingStatus, $businessId: ID) {
+  adminBookings(limit: $limit, page: $page, status: $status, businessId: $businessId) {
+    items {
+      ...BookingFields
+      service {
+        ...ServiceFields
+      }
+      user {
+        ...UserFields
+      }
+      business {
+        ...BusinessFields
+      }
+    }
+    pagination {
+      ...PaginationFields
+    }
+  }
+}
+
+query GetAdminUsers($limit: Int, $page: Int, $role: UserRole, $search: String) {
+  adminUsers(limit: $limit, page: $page, role: $role, search: $search) {
+    items {
+      ...UserFields
+      business {
+        ...BusinessFields
+      }
+      stats {
+        totalBookings
+        lastBookingDate
+        accountAge
+      }
+    }
+    pagination {
+      ...PaginationFields
+    }
+  }
+}
+
+query GetAdminBusinesses($limit: Int, $page: Int, $status: BusinessStatus, $search: String) {
+  adminBusinesses(limit: $limit, page: $page, status: $status, search: $search) {
+    items {
+      ...BusinessFields
+      owner {
+        ...UserFields
+      }
+      stats {
+        totalBookings
+        totalRevenue
+        averageRating
+        activeServices
+      }
+    }
+    pagination {
+      ...PaginationFields
+    }
+  }
+}
+
+query GetAdminProviders($limit: Int, $page: Int, $verificationStatus: VerificationStatus, $search: String) {
+  adminProviders(limit: $limit, page: $page, verificationStatus: $verificationStatus, search: $search) {
+    items {
+      ...ProviderFields
+      verificationStatus {
+        isVerified
+        backgroundCheck
+        phoneVerified
+        emailVerified
+        licenseVerified
+        badges
+      }
+      stats {
+        totalBookings
+        averageRating
+        responseTime
+      }
+    }
+    pagination {
+      ...PaginationFields
+    }
+  }
+}
+
+# Admin user management
+mutation AdminUpdateUser($id: ID!, $input: AdminUpdateUserInput!) {
+  adminUpdateUser(id: $id, input: $input) {
+    ...UserFields
+  }
+}
+
+mutation AdminDeleteUser($id: ID!) {
+  adminDeleteUser(id: $id) {
+    success
+    message
+  }
+}
+
+mutation AdminSuspendUser($id: ID!, $reason: String!) {
+  adminSuspendUser(id: $id, reason: $reason) {
+    success
+    message
+  }
+}
+
+mutation AdminActivateUser($id: ID!) {
+  adminActivateUser(id: $id) {
+    success
+    message
+  }
+}
+
+# Admin business management
+mutation AdminUpdateBusiness($id: ID!, $input: AdminUpdateBusinessInput!) {
+  adminUpdateBusiness(id: $id, input: $input) {
+    ...BusinessFields
+  }
+}
+
+mutation AdminDeleteBusiness($id: ID!) {
+  adminDeleteBusiness(id: $id) {
+    success
+    message
+  }
+}
+
+mutation AdminSuspendBusiness($id: ID!, $reason: String!) {
+  adminSuspendBusiness(id: $id, reason: $reason) {
+    success
+    message
+  }
+}
+
+mutation AdminActivateBusiness($id: ID!) {
+  adminActivateBusiness(id: $id) {
+    success
+    message
+  }
+}
+
+# Admin provider verification
+mutation AdminVerifyProvider($providerId: ID!, $verificationType: VerificationType!) {
+  adminVerifyProvider(providerId: $providerId, verificationType: $verificationType) {
+    success
+    message
+  }
+}
+
+mutation AdminRejectVerification($providerId: ID!, $verificationType: VerificationType!, $reason: String!) {
+  adminRejectVerification(providerId: $providerId, verificationType: $verificationType, reason: $reason) {
+    success
+    message
+  }
+}
+
+# Admin analytics and reporting
+query GetAdminAnalytics($period: AnalyticsPeriod!, $startDate: String, $endDate: String) {
+  adminAnalytics(period: $period, startDate: $startDate, endDate: $endDate) {
+    platformMetrics {
+      totalUsers
+      totalBusinesses
+      totalBookings
+      totalRevenue
+      averageBookingValue
+      userRetentionRate
+    }
+    growthMetrics {
+      newUsers
+      newBusinesses
+      newBookings
+      revenueGrowth
+    }
+    performanceMetrics {
+      averageResponseTime
+      bookingCompletionRate
+      customerSatisfaction
+      systemUptime
+    }
+    geographicMetrics {
+      topCities {
+        city
+        bookings
+        revenue
+      }
+      topStates {
+        state
+        bookings
+        revenue
+      }
+    }
+  }
+}
+
+query GetAdminReports($reportType: AdminReportType!, $startDate: String!, $endDate: String!) {
+  adminReports(reportType: $reportType, startDate: $startDate, endDate: $endDate) {
+    reportData
+    generatedAt
+    downloadUrl
+  }
+}
+
+# System health and monitoring
+query GetSystemHealth {
+  systemHealth {
+    status
+    uptime
+    responseTime
+    errorRate
+    activeConnections
+    databaseStatus
+    cacheStatus
+    queueStatus
+  }
+}
+
+query GetSystemLogs($level: LogLevel, $limit: Int, $page: Int) {
+  systemLogs(level: $level, limit: $limit, page: $page) {
+    items {
+      id
+      level
+      message
+      timestamp
+      userId
+      requestId
+      metadata
+    }
+    pagination {
+      ...PaginationFields
+    }
+  }
+}
+
+# Input types for mutations
+input AdminUpdateUserInput {
+  name: String
+  email: String
+  phone: String
+  role: UserRole
+  isActive: Boolean
+  business_id: ID
+}
+
+input AdminUpdateBusinessInput {
+  name: String
+  description: String
+  timezone: String
+  contact_info: String
+  status: BusinessStatus
+}
+
+enum UserRole {
+  USER
+  PROVIDER
+  BUSINESS_OWNER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum BusinessStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING
+  INACTIVE
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+  UNVERIFIED
+}
+
+enum LogLevel {
+  DEBUG
+  INFO
+  WARN
+  ERROR
+  FATAL
+}
+
+enum AdminReportType {
+  USER_ACTIVITY
+  BUSINESS_PERFORMANCE
+  BOOKING_ANALYTICS
+  REVENUE_REPORT
+  SYSTEM_METRICS
+  SECURITY_AUDIT
+} 

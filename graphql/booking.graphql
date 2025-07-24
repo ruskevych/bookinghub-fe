@@ -1,0 +1,158 @@
+# Booking GraphQL operations
+# Based on booking-wizard.tsx, use-booking.ts, and dashboard page patterns
+
+query GetBookings($limit: Int, $page: Int, $status: BookingStatus, $userId: ID) {
+  bookings(limit: $limit, page: $page, status: $status, userId: $userId) {
+    items {
+      ...BookingFields
+      service {
+        ...ServiceFields
+      }
+      time_slot {
+        ...TimeSlotFields
+      }
+      user {
+        ...UserFields
+      }
+    }
+    pagination {
+      ...PaginationFields
+    }
+  }
+}
+
+query GetBooking($id: ID!) {
+  booking(id: $id) {
+    ...BookingFields
+    service {
+      ...ServiceFields
+    }
+    time_slot {
+      ...TimeSlotFields
+    }
+    user {
+      ...UserFields
+    }
+  }
+}
+
+mutation CreateBooking($input: CreateBookingInput!) {
+  createBooking(input: $input) {
+    ...BookingFields
+    service {
+      ...ServiceFields
+    }
+    time_slot {
+      ...TimeSlotFields
+    }
+  }
+}
+
+mutation UpdateBooking($id: ID!, $input: UpdateBookingInput!) {
+  updateBooking(id: $id, input: $input) {
+    ...BookingFields
+  }
+}
+
+mutation CancelBooking($id: ID!) {
+  cancelBooking(id: $id) {
+    ...BookingFields
+  }
+}
+
+mutation ConfirmBooking($id: ID!) {
+  confirmBooking(id: $id) {
+    ...BookingFields
+  }
+}
+
+mutation CompleteBooking($id: ID!) {
+  completeBooking(id: $id) {
+    ...BookingFields
+  }
+}
+
+mutation UpdateBookingStatus($id: ID!, $status: BookingStatus!) {
+  updateBookingStatus(id: $id, status: $status) {
+    ...BookingFields
+  }
+}
+
+# Booking wizard specific queries
+query GetAvailableTimeSlots($serviceId: ID!, $date: String!) {
+  availableTimeSlots(serviceId: $serviceId, date: $date) {
+    ...TimeSlotFields
+  }
+}
+
+query GetStaffMembers($serviceId: ID!, $date: String!, $timeSlotId: ID!) {
+  availableStaffMembers(serviceId: $serviceId, date: $date, timeSlotId: $timeSlotId) {
+    ...StaffMemberFields
+  }
+}
+
+query GetAddOnServices($serviceId: ID!) {
+  addOnServices(serviceId: $serviceId) {
+    id
+    name
+    description
+    price
+    duration
+  }
+}
+
+# Booking confirmation queries
+query GetBookingConfirmation($bookingId: ID!) {
+  bookingConfirmation(bookingId: $bookingId) {
+    booking {
+      ...BookingFields
+      service {
+        ...ServiceFields
+      }
+      time_slot {
+        ...TimeSlotFields
+      }
+    }
+    calendarLinks {
+      google
+      outlook
+      ical
+    }
+    qrCode
+  }
+}
+
+# Input types for mutations
+input CreateBookingInput {
+  service_id: ID!
+  time_slot_id: ID!
+  staff_member_id: ID
+  add_on_service_ids: [ID!]
+  special_requests: String
+  customer_info: CustomerInfoInput
+  payment_method: String
+  promo_code: String
+}
+
+input UpdateBookingInput {
+  time_slot_id: ID
+  staff_member_id: ID
+  add_on_service_ids: [ID!]
+  special_requests: String
+  notes: String
+}
+
+input CustomerInfoInput {
+  name: String!
+  email: String!
+  phone: String!
+  emergency_contact: String
+  accessibility_needs: String
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+} 

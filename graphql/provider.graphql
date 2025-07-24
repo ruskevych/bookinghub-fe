@@ -1,0 +1,249 @@
+# Provider GraphQL operations
+# Based on use-provider.ts, provider-card.tsx, and search functionality
+
+query SearchProviders($input: SearchProvidersInput!) {
+  searchProviders(input: $input) {
+    items {
+      ...ProviderFields
+      services {
+        ...ServiceFields
+      }
+    }
+    pagination {
+      ...PaginationFields
+    }
+    filters {
+      categories
+      priceRanges
+      locations
+      availability
+    }
+  }
+}
+
+query GetProvider($id: ID!, $includeReviews: Boolean = true, $includeAvailability: Boolean = true, $includeGallery: Boolean = true) {
+  provider(id: $id) {
+    ...ProviderFields
+    services {
+      ...ServiceFields
+    }
+    reviews @include(if: $includeReviews) {
+      ...ReviewFields
+    }
+    availability @include(if: $includeAvailability) {
+      ...AvailabilitySlotFields
+    }
+    gallery @include(if: $includeGallery) {
+      ...GalleryImageFields
+    }
+    certifications {
+      ...CertificationFields
+    }
+    socialMedia {
+      website
+      facebook
+      instagram
+      twitter
+      linkedin
+      youtube
+    }
+  }
+}
+
+query GetProviderReviews($providerId: ID!, $limit: Int, $page: Int, $rating: Int) {
+  providerReviews(providerId: $providerId, limit: $limit, page: $page, rating: $rating) {
+    items {
+      ...ReviewFields
+    }
+    pagination {
+      ...PaginationFields
+    }
+  }
+}
+
+query GetProviderAvailability($providerId: ID!, $startDate: String!, $endDate: String!) {
+  providerAvailability(providerId: $providerId, startDate: $startDate, endDate: $endDate) {
+    ...AvailabilitySlotFields
+  }
+}
+
+query GetProviderStats($providerId: ID!) {
+  providerStats(providerId: $providerId) {
+    totalBookings
+    completedBookings
+    cancelationRate
+    averageResponseTime
+    repeatCustomerRate
+    averageRating
+    totalReviews
+  }
+}
+
+mutation CreateProvider($input: CreateProviderInput!) {
+  createProvider(input: $input) {
+    ...ProviderFields
+  }
+}
+
+mutation UpdateProvider($id: ID!, $input: UpdateProviderInput!) {
+  updateProvider(id: $id, input: $input) {
+    ...ProviderFields
+  }
+}
+
+mutation DeleteProvider($id: ID!) {
+  deleteProvider(id: $id) {
+    success
+    message
+  }
+}
+
+mutation ToggleFavoriteProvider($providerId: ID!) {
+  toggleFavoriteProvider(providerId: $providerId) {
+    success
+    isFavorite
+  }
+}
+
+mutation SubmitReview($input: SubmitReviewInput!) {
+  submitReview(input: $input) {
+    ...ReviewFields
+  }
+}
+
+mutation UpdateReview($id: ID!, $input: UpdateReviewInput!) {
+  updateReview(id: $id, input: $input) {
+    ...ReviewFields
+  }
+}
+
+mutation DeleteReview($id: ID!) {
+  deleteReview(id: $id) {
+    success
+    message
+  }
+}
+
+mutation ProviderResponse($reviewId: ID!, $message: String!) {
+  providerResponse(reviewId: $reviewId, message: $message) {
+    ...ReviewFields
+  }
+}
+
+# Provider verification
+mutation RequestVerification($input: VerificationRequestInput!) {
+  requestVerification(input: $input) {
+    success
+    message
+    verificationId
+  }
+}
+
+query GetVerificationStatus($providerId: ID!) {
+  verificationStatus(providerId: $providerId) {
+    isVerified
+    backgroundCheck
+    phoneVerified
+    emailVerified
+    licenseVerified
+    badges
+    pendingRequests {
+      id
+      type
+      status
+      submittedAt
+    }
+  }
+}
+
+# Input types for mutations
+input SearchProvidersInput {
+  query: String
+  categories: [String!]
+  location: String
+  priceRange: PriceRangeInput
+  availability: [String!]
+  sortBy: String
+  limit: Int
+  page: Int
+}
+
+input PriceRangeInput {
+  min: Float
+  max: Float
+}
+
+input CreateProviderInput {
+  name: String!
+  email: String!
+  phone: String!
+  businessName: String!
+  category: String!
+  bio: String!
+  address: String!
+  city: String!
+  state: String!
+  zipCode: String!
+  serviceRadius: Int!
+  startingPrice: Float!
+  businessHours: BusinessHoursInput!
+  languages: [String!]
+}
+
+input UpdateProviderInput {
+  name: String
+  email: String
+  phone: String
+  businessName: String
+  category: String
+  bio: String
+  address: String
+  city: String
+  state: String
+  zipCode: String
+  serviceRadius: Int
+  startingPrice: Float
+  businessHours: BusinessHoursInput
+  languages: [String!]
+}
+
+input BusinessHoursInput {
+  monday: DayHoursInput
+  tuesday: DayHoursInput
+  wednesday: DayHoursInput
+  thursday: DayHoursInput
+  friday: DayHoursInput
+  saturday: DayHoursInput
+  sunday: DayHoursInput
+}
+
+input DayHoursInput {
+  isOpen: Boolean!
+  openTime: String
+  closeTime: String
+}
+
+input SubmitReviewInput {
+  providerId: ID!
+  serviceId: ID!
+  rating: Int!
+  comment: String!
+}
+
+input UpdateReviewInput {
+  rating: Int
+  comment: String
+}
+
+input VerificationRequestInput {
+  providerId: ID!
+  type: VerificationType!
+  documents: [String!]
+}
+
+enum VerificationType {
+  BACKGROUND_CHECK
+  LICENSE_VERIFICATION
+  PHONE_VERIFICATION
+  EMAIL_VERIFICATION
+} 

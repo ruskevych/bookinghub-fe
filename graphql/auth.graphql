@@ -1,0 +1,94 @@
+# Authentication GraphQL operations
+# Based on auth-context.tsx and auth service patterns
+
+query GetCurrentUser {
+  me {
+    ...UserFields
+  }
+}
+
+mutation Login($input: LoginInput!) {
+  login(input: $input) {
+    access_token
+    refresh_token
+    user {
+      ...UserFields
+    }
+  }
+}
+
+mutation Register($input: RegisterInput!) {
+  register(input: $input) {
+    access_token
+    refresh_token
+    user {
+      ...UserFields
+    }
+  }
+}
+
+mutation RefreshToken($refreshToken: String!) {
+  refreshToken(refreshToken: $refreshToken) {
+    access_token
+    refresh_token
+    user {
+      ...UserFields
+    }
+  }
+}
+
+mutation Logout {
+  logout {
+    success
+    message
+  }
+}
+
+mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {
+  updateUser(id: $id, input: $input) {
+    ...UserFields
+  }
+}
+
+query GetUserPreferences {
+  userPreferences {
+    ...UserPreferencesFields
+  }
+}
+
+mutation UpdateUserPreferences($input: UpdateUserPreferencesInput!) {
+  updateUserPreferences(input: $input) {
+    ...UserPreferencesFields
+  }
+}
+
+# Input types for mutations
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input RegisterInput {
+  name: String!
+  email: String!
+  password: String!
+  phone: String
+}
+
+input UpdateUserInput {
+  name: String
+  email: String
+  phone: String
+  telegram_id: Int
+  whatsapp_id: String
+}
+
+input UpdateUserPreferencesInput {
+  notification_enabled: Boolean
+  email_notifications: Boolean
+  sms_notifications: Boolean
+  telegram_notifications: Boolean
+  whatsapp_notifications: Boolean
+  preferred_language: String
+  timezone: String
+} 

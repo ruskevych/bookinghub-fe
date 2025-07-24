@@ -1,0 +1,32 @@
+# Example GraphQL schema for local codegen
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+}
+
+type Service {
+  id: ID!
+  name: String!
+  price: Float!
+}
+
+type Booking {
+  id: ID!
+  user: User!
+  service: Service!
+  date: String!
+  status: String!
+}
+
+type Query {
+  users: [User!]!
+  services: [Service!]!
+  bookings: [Booking!]!
+  booking(id: ID!): Booking
+}
+
+type Mutation {
+  createBooking(userId: ID!, serviceId: ID!, date: String!): Booking!
+} 
