@@ -4,13 +4,14 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20.0.0",
-    "pnpm": ">=10.0.0"
+    "node": "20.x",
+    "pnpm": "10.x"
   },
   "packageManager": "pnpm@10.13.1",
+
   "scripts": {
     "dev": "next dev --turbopack --port 4000",
-    "build": "next build",
+    "build": "pnpm install --prod --no-optional && next build",
     "start": "next start -H 0.0.0.0 -p ${PORT:-8080}",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
