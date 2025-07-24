@@ -25,10 +25,12 @@ const LayoutContext = React.createContext<LayoutProviderState | undefined>(
 )
 
 const saveToLS = (storageKey: string, value: string) => {
-  try {
-    localStorage.setItem(storageKey, value)
-  } catch {
-    // Unsupported
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem(storageKey, value)
+    } catch {
+      // Unsupported
+    }
   }
 }
 
@@ -51,9 +53,11 @@ const Layout = ({
   const [layout, setLayoutState] = React.useState<Layout>(() => {
     if (isServer) return defaultLayout
     try {
-      const saved = localStorage.getItem(storageKey)
-      if (saved === "fixed" || saved === "full") {
-        return saved
+      if (typeof window !== "undefined") {
+        const saved = localStorage.getItem(storageKey)
+        if (saved === "fixed" || saved === "full") {
+          return saved
+        }
       }
       return defaultLayout
     } catch {
@@ -117,8 +121,14 @@ const Layout = ({
       }
     }
 
-    window.addEventListener("storage", handleStorage)
-    return () => window.removeEventListener("storage", handleStorage)
+    if (typeof window !== "undefined") {
+      window.addEventListener("storage", handleStorage)
+    }
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("storage", handleStorage)
+      }
+    }
   }, [setLayout, storageKey, defaultLayout])
 
   // Apply layout on mount and when it changes

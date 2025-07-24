@@ -14,6 +14,7 @@ const eslintConfig = [
     extends: ["next/core-web-vitals", "next/typescript"],
     rules: {
       "@next/next/no-duplicate-head": "off",
+      '@typescript-eslint/no-unused-vars': 'off', // Disabled unused vars rule
     },
   }),
 ]

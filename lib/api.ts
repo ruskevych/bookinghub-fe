@@ -228,7 +228,6 @@ export const businessService = {
 
 export const serviceService = {
   getServices: (params?: PaginationParams) => api.get<PaginatedResponse<Service>>('/api/services', { params }),
-  createService: (data: Omit<Service, 'id' | 'created_at' | 'updated_at'>) => api.post<Service>('/api/services', data),
   getService: (id: string) => api.get<Service>(`/api/services/${id}`),
   updateService: (id: string, data: Partial<Service>) => api.put<Service>(`/api/services/${id}`, data),
   deleteService: (id: string) => api.delete(`/api/services/${id}`),
@@ -247,7 +246,6 @@ export const bookingService = {
   getBookings: (params?: PaginationParams) => api.get<PaginatedResponse<Booking>>('/api/bookings', { params }),
   createBooking: (data: CreateBookingRequest) => api.post<Booking>('/api/bookings', data),
   getBooking: (id: string) => api.get<Booking>(`/api/bookings/${id}`),
-  updateBooking: (id: string, data: Partial<Booking>) => api.put<Booking>(`/api/bookings/${id}`, data),
   deleteBooking: (id: string) => api.delete(`/api/bookings/${id}`),
   confirmBooking: (id: string) => api.patch<Booking>(`/api/bookings/${id}/confirm`),
   cancelBooking: (id: string) => api.patch<Booking>(`/api/bookings/${id}/cancel`),

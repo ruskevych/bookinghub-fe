@@ -1,9 +1,9 @@
-import { createClient, dedupExchange, cacheExchange, fetchExchange } from 'urql';
+import { createClient, cacheExchange, fetchExchange, Operation } from 'urql';
 import { authExchange } from '@urql/exchange-auth';
 // import { useAppStore } from '@/components/providers'; // Uncomment when using Zustand for token
 
 // Placeholder for getting JWT token (replace with Zustand or session logic)
-function getAuthToken() {
+function getAuthToken(): string | null {
   // return useAppStore.getState().jwtToken;
   return typeof window !== 'undefined' ? localStorage.getItem('jwtToken') : null;
 }
@@ -11,26 +11,16 @@ function getAuthToken() {
 export const urqlClient = createClient({
   url: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || 'http://localhost:4000/graphql',
   exchanges: [
-    dedupExchange,
     cacheExchange,
-    authExchange({
-      addAuthToOperation: ({ authState, operation }) => {
-        if (!authState || !authState.token) return operation;
-        return {
-          ...operation,
-          context: {
-            ...operation.context,
-            fetchOptions: {
-              ...operation.context.fetchOptions,
-              headers: {
-                ...operation.context.fetchOptions?.headers,
-                Authorization: `Bearer ${authState.token}`,
-              },
-            },
-          },
-        };
+    authExchange(async (utils) => ({
+      addAuthToOperation(operation: Operation) {
+        const token = getAuthToken();
+        if (!token) return operation;
+        return utils.appendHeaders(operation, {
+          Authorization: `Bearer ${token}`,
+        });
       },
-      getAuth: async ({ authState }) => {
+      async getAuth(authState: { token?: string } | null) {
         if (!authState) {
           const token = getAuthToken();
           if (token) {
@@ -41,14 +31,24 @@ export const urqlClient = createClient({
         // Optionally refresh token logic here
         return authState;
       },
-      didAuthError: ({ error }) => {
-        return error.graphQLErrors.some(e => e.extensions?.code === 'UNAUTHENTICATED');
+      didAuthError(error, _operation) {
+        return error.graphQLErrors?.some((e: { extensions?: { code?: string } }) => e.extensions?.code === 'UNAUTHENTICATED');
       },
-      willAuthError: ({ authState }) => {
-        if (!authState || !authState.token) return true;
-        return false;
+      willAuthError(operation: Operation) {
+        // Try to extract the token from the operation's headers
+        let token: string | undefined;
+        const fetchOptions = operation.context.fetchOptions;
+        if (typeof fetchOptions === 'object' && fetchOptions && 'headers' in fetchOptions) {
+          const headers = fetchOptions.headers as Record<string, string>;
+          token = headers['Authorization'] || headers['authorization'];
+        }
+        return !token;
       },
-    }),
+      async refreshAuth() {
+        // No-op for now; implement token refresh logic if needed
+        return;
+      },
+    })),
     fetchExchange,
   ],
 });
