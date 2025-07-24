@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This guide covers deploying BookingHub to various platforms and environments.
+This guide covers deploying Timeio to various platforms and environments.
 
 ## 🚀 Quick Start
 
@@ -677,4 +677,4 @@ pnpm lint
 - Monitor error rates and response times
 - Implement alerting for critical issues
 
-This deployment guide provides comprehensive instructions for deploying BookingHub to various platforms while ensuring security, performance, and scalability. 
+This deployment guide provides comprehensive instructions for deploying Timeio to various platforms while ensuring security, performance, and scalability. 

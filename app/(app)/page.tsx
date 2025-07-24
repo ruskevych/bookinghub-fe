@@ -34,7 +34,7 @@ import { BookingForm } from '@/components/booking/booking-form';
 import { Testimonials } from '@/components/booking/testimonials';
 import { stats, featuredProviders, benefits } from '@/components/booking/constants';
 
-export default function BookingHubHomepage() {
+export default function TimeioHomepage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, isAuthenticated } = useAuth();
   const router = useRouter();
@@ -105,10 +105,14 @@ export default function BookingHubHomepage() {
       </section>
 
       {/* Service Categories */}
-      <ServiceCategories />
+      <div id="services">
+        <ServiceCategories />
+      </div>
 
       {/* How It Works */}
-      <HowItWorks />
+      <div id="how-it-works">
+        <HowItWorks />
+      </div>
 
       {/* Booking Form */}
       <div ref={bookingRef}>
@@ -179,7 +183,7 @@ export default function BookingHubHomepage() {
       <section className="py-16 bg-muted/20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Why Choose BookingHub?</h2>
+            <h2 className="text-3xl font-bold mb-4">Why Choose Timeio?</h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               We make booking services simple, secure, and reliable
             </p>
@@ -203,10 +207,12 @@ export default function BookingHubHomepage() {
       </section>
 
       {/* Testimonials */}
-      <Testimonials />
+      <div id="testimonials">
+        <Testimonials />
+      </div>
 
       {/* Footer */}
-      <footer className="bg-background border-t py-12">
+      <footer id="contact" className="bg-background border-t py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
@@ -214,7 +220,7 @@ export default function BookingHubHomepage() {
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                   <Search className="h-4 w-4 text-primary-foreground" />
                 </div>
-                <span className="font-bold text-xl">BookingHub</span>
+                <span className="font-bold text-xl">Timeio</span>
               </Link>
               <p className="text-muted-foreground mb-4">
                 Connecting you with trusted local service providers for all your needs.
@@ -272,7 +278,7 @@ export default function BookingHubHomepage() {
           </div>
           
           <div className="border-t mt-8 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2024 BookingHub. All rights reserved.</p>
+            <p>&copy; 2024 Timeio. All rights reserved.</p>
           </div>
         </div>
       </footer>

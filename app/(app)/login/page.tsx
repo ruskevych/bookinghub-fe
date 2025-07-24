@@ -62,7 +62,7 @@ export default function LoginPage() {
               <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
                 <LogIn className="h-5 w-5 text-primary-foreground" />
               </div>
-              <span className="font-bold text-2xl text-foreground">BookingHub</span>
+              <span className="font-bold text-2xl text-foreground">Timeio</span>
             </Link>
           <h2 className="text-4xl font-bold text-foreground mb-2">Sign in to your account</h2>
           

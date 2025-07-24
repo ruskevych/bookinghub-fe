@@ -48,7 +48,7 @@ export const SearchHeader: React.FC<SearchHeaderProps> = React.memo(function Sea
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <Search className="h-4 w-4 text-primary-foreground" />
             </div>
-            <span className="font-bold text-xl">BookingHub</span>
+            <span className="font-bold text-xl">Timeio</span>
           </Link>
 
           {/* Search Bar - Desktop */}

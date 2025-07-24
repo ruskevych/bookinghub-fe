@@ -1,4 +1,4 @@
-# BookingHub Service Search/Browse Page
+# Timeio Service Search/Browse Page
 
 A comprehensive, modern service search and browse interface built with Next.js, React, TypeScript, and shadcn/ui components.
 
@@ -14,7 +14,7 @@ A comprehensive, modern service search and browse interface built with Next.js, 
 ### User Interface Components
 
 #### 1. Header Section
-- **BookingHub Logo**: Prominent branding on the left
+- **Timeio Logo**: Prominent branding on the left
 - **Search Bar**: 
   - Placeholder: "Search services or providers..."
   - Auto-complete dropdown with recent searches and popular services
@@ -240,7 +240,7 @@ interface ServiceProvider {
 ## 🎨 Customization
 
 ### Theming
-The search page fully supports the BookingHub theme system with:
+The search page fully supports the Timeio theme system with:
 - **CSS Variables**: Easy color customization
 - **Dark Mode**: Automatic theme switching
 - **Brand Colors**: Consistent with overall design system

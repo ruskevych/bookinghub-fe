@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: ProviderPageProps) {
   
   // In a real app, you would fetch the provider data here to generate proper metadata
   return {
-    title: 'Provider Profile - BookingHub',
+    title: 'Provider Profile - Timeio',
     description: 'View detailed information about this service provider including services, reviews, and availability.',
   };
 } 

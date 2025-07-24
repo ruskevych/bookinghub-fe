@@ -121,7 +121,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ businessId }) => {
         </TabsList>
 
         <TabsContent value="business" className="w-full">
-          <div className="w-full max-w-4xl mx-auto">
+          <div className="w-full">
             <Card>
               <CardHeader>
                 <CardTitle>Business Information</CardTitle>
@@ -215,7 +215,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ businessId }) => {
         </TabsContent>
 
         <TabsContent value="hours" className="w-full">
-          <div className="w-full max-w-4xl mx-auto">
+          <div className="w-full mx-auto">
             <Card>
               <CardHeader>
                 <CardTitle>Working Hours</CardTitle>
@@ -281,7 +281,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ businessId }) => {
       </TabsContent>
 
       <TabsContent value="notifications" className="w-full">
-        <div className="w-full max-w-4xl mx-auto">
+        <div className="w-full mx-auto">
           <Card>
             <CardHeader>
               <CardTitle>Notification Settings</CardTitle>

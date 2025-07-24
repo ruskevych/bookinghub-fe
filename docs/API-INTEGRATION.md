@@ -1,6 +1,6 @@
 # API Integration Guide
 
-This document provides detailed information about the API integration in BookingHub, including endpoints, authentication, error handling, and best practices.
+This document provides detailed information about the API integration in Timeio, including endpoints, authentication, error handling, and best practices.
 
 ## 🔐 Authentication
 

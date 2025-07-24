@@ -1,6 +1,6 @@
 # Component Architecture Guide
 
-This document outlines the component architecture, patterns, and best practices used in BookingHub.
+This document outlines the component architecture, patterns, and best practices used in Timeio.
 
 ## 🏗 Component Structure
 

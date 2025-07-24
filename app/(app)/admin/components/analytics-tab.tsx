@@ -88,60 +88,51 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ bookings, services }
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
   return (
-    <TabContentLayout title="Business Analytics" maxWidth="full">
+    <TabContentLayout title="Business Analytics" maxWidth="none" className="!px-0">
       {/* Key Metrics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
-        <Card className="w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 w-full px-6 xl:px-12">
+        <Card className="w-full min-h-[120px] text-lg">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Revenue</CardTitle>
+            <CardTitle className="text-base font-semibold text-muted-foreground">Total Revenue</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${totalRevenue.toFixed(2)}</div>
+            <div className="text-3xl font-bold">${totalRevenue.toFixed(2)}</div>
           </CardContent>
         </Card>
-        
-        <Card className="w-full">
+        <Card className="w-full min-h-[120px] text-lg">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Bookings</CardTitle>
+            <CardTitle className="text-base font-semibold text-muted-foreground">Total Bookings</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{bookings.length}</div>
+            <div className="text-3xl font-bold">{bookings.length}</div>
           </CardContent>
         </Card>
-        
-        <Card className="w-full">
+        <Card className="w-full min-h-[120px] text-lg">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Completed Bookings</CardTitle>
+            <CardTitle className="text-base font-semibold text-muted-foreground">Completed Bookings</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {bookings.filter(b => b.status === 'Completed').length}
-            </div>
+            <div className="text-3xl font-bold">{bookings.filter(b => b.status === 'Completed').length}</div>
           </CardContent>
         </Card>
-        
-        <Card className="w-full">
+        <Card className="w-full min-h-[120px] text-lg">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Cancellation Rate</CardTitle>
+            <CardTitle className="text-base font-semibold text-muted-foreground">Cancellation Rate</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {bookings.length > 0 
-                ? `${((bookings.filter(b => b.status === 'Cancelled').length / bookings.length) * 100).toFixed(1)}%` 
-                : '0%'}
-            </div>
+            <div className="text-3xl font-bold">{bookings.length > 0 ? `${((bookings.filter(b => b.status === 'Cancelled').length / bookings.length) * 100).toFixed(1)}%` : '0%'}</div>
           </CardContent>
         </Card>
       </div>
 
       {/* Charts Grid - Optimized Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 w-full px-6 xl:px-12 mt-4">
         {/* Monthly Revenue Chart */}
-        <Card className="lg:col-span-1 w-full">
+        <Card className="xl:col-span-1 w-full min-h-[420px]">
           <CardHeader>
             <CardTitle>Monthly Revenue</CardTitle>
           </CardHeader>
-          <CardContent className="h-64">
+          <CardContent className="h-96">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={monthlyRevenue}>
                 <XAxis dataKey="month" />
@@ -152,30 +143,28 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ bookings, services }
             </ResponsiveContainer>
           </CardContent>
         </Card>
-
         {/* Service Popularity Chart */}
-        <Card className="lg:col-span-1 w-full">
+        <Card className="xl:col-span-1 w-full min-h-[420px]">
           <CardHeader>
             <CardTitle>Service Popularity</CardTitle>
           </CardHeader>
-          <CardContent className="h-64">
+          <CardContent className="h-96">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={servicePopularity.slice(0, 5)} layout="vertical">
                 <XAxis type="number" />
-                <YAxis dataKey="name" type="category" width={80} />
+                <YAxis dataKey="name" type="category" width={100} />
                 <Tooltip />
                 <Bar dataKey="bookings" fill="#38a169" name="Bookings" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
-
         {/* Booking Status Distribution Chart */}
-        <Card className="lg:col-span-1 w-full">
+        <Card className="xl:col-span-1 w-full min-h-[420px]">
           <CardHeader>
             <CardTitle>Booking Status</CardTitle>
           </CardHeader>
-          <CardContent className="h-64 flex justify-center items-center">
+          <CardContent className="h-96 flex justify-center items-center">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -184,7 +173,7 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ bookings, services }
                   cy="50%"
                   labelLine={false}
                   label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={60}
+                  outerRadius={100}
                   fill="#8884d8"
                   dataKey="value"
                 >

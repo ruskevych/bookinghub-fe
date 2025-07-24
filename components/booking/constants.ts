@@ -83,7 +83,7 @@ export const testimonials = [
     role: "Marketing Manager",
     image: "/avatars/01.png",
     rating: 5,
-    comment: "BookingHub made it so easy to find and book a great hairstylist. The whole process was seamless!"
+    comment: "Timeio made it so easy to find and book a great hairstylist. The whole process was seamless!"
   },
   {
     name: "Michael Chen",

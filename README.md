@@ -1,10 +1,10 @@
-# BookingHub - Modern Booking Application
+# Timeio - Modern Booking Application
 
 A comprehensive, modern booking application built with Next.js 15, React 19, TypeScript, and shadcn/ui components. This application provides a complete solution for service booking, user management, and business administration.
 
 ## 📋 Overview
 
-BookingHub is a full-featured booking platform that enables users to discover, book, and manage appointments with service providers. The application includes both customer-facing features and comprehensive admin tools for business management.
+Timeio is a full-featured booking platform that enables users to discover, book, and manage appointments with service providers. The application includes both customer-facing features and comprehensive admin tools for business management.
 
 ### 🎯 Core Features
 
@@ -410,4 +410,4 @@ For questions, issues, or contributions:
 
 ---
 
-**BookingHub** - Making service booking simple and efficient.
+**Timeio** - Making service booking simple and efficient.

@@ -91,7 +91,7 @@ export default function AdminDashboardPage() {
       
       <div className="flex flex-1 overflow-hidden ">
         <SidebarProvider>
-          <div className="flex h-full">
+          <div className="flex w-full h-full">
             <Sidebar variant="floating" className="bg-gradient-to-b from-primary/5 to-background border-r mt-0">
               <SidebarContent className="mt-18 overflow-y-auto">
                 <SidebarMenu className="space-y-1 px-2">
