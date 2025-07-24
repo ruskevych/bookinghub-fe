@@ -42,7 +42,8 @@
 
 ### 🔌 GraphQL Integration
 
-* [ ] **Setup urql Client with JWT Auth Middleware**
+* [x] **Setup urql Client with JWT Auth Middleware**  
+  _urql client is set up in lib/graphql-client.ts and provided at the app root, with JWT middleware ready for integration with Zustand/session._
 
   * **What:** Create `lib/graphql-client.ts` that initializes urql with fetchExchange, cacheExchange, and authExchange for token injection.
   * **Why:** Establishes a secure and reusable GraphQL connection.

@@ -57,6 +57,7 @@
     "@tailwindcss/postcss": "^4.0.1",
     "@tanstack/react-query": "^5.83.0",
     "@tanstack/react-table": "^8.9.1",
+    "@urql/core": "^5.2.0",
     "@vercel/analytics": "^1.4.1",
     "axios": "^1.10.0",
     "change-case": "^5.4.4",
@@ -71,6 +72,7 @@
     "fumadocs-docgen": "^2.0.0",
     "fumadocs-mdx": "^11.6.3",
     "fumadocs-ui": "^15.3.1",
+    "graphql": "^16.11.0",
     "input-otp": "^1.4.2",
     "jotai": "^2.1.0",
     "little-date": "^1.0.0",
@@ -95,6 +97,7 @@
     "sonner": "^2.0.0",
     "tailwind-merge": "^3.0.1",
     "ts-morph": "18.0.0",
+    "urql": "^4.2.2",
     "vaul": "1.1.2",
     "zod": "^3.24.1",
     "zustand": "^5.0.6"
