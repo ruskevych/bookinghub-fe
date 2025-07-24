@@ -4,8 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "20.x",
-    "pnpm": "10.x"
+    "node": "20.x"
   },
   "packageManager": "pnpm@10.13.1",
 
@@ -20,6 +19,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
     "registry:build": "tsx --tsconfig ./tsconfig.scripts.json ./scripts/build-registry.mts && prettier --log-level silent --write \"registry/**/*.{ts,tsx,json,mdx}\" --cache",
     "registry:capture": "tsx --tsconfig ./tsconfig.scripts.json ./scripts/capture-registry.mts",
+    "preinstall": "node scripts/check-pnpm-version.js",
     "postinstall": "fumadocs-mdx"
   },
   "dependencies": {
