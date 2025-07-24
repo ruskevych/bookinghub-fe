@@ -1,0 +1,13 @@
+schema: schema.graphql
+documents:
+  - "app/**/*.ts"
+  - "app/**/*.tsx"
+  - "components/**/*.ts"
+  - "components/**/*.tsx"
+  - "hooks/**/*.ts"
+  - "hooks/**/*.tsx"
+generates:
+  generated/graphql.ts:
+    plugins:
+      - typescript
+      - typescript-urql 
