@@ -31,7 +31,8 @@
   * **Why:** Enables caching, retry logic, background updates, and removes the need for manual loading/error handling.
   * **How:** Refactor existing REST/GraphQL data logic into query/mutation hooks with cache keys.
 
-* [ ] **Introduce Zustand for Client/UI State**
+* [x] **Introduce Zustand for Client/UI State**  
+  _Zustand is now used for global UI state (selectedTab) in the admin dashboard, and the store is ready for auth and bookingFlow slices._
 
   * **What:** Use [Zustand](https://zustand-demo.pmnd.rs/) for global UI/session state (e.g., active business ID, selected tab, open modals).
   * **Why:** Eliminates prop drilling and reduces re-renders compared to Context API.

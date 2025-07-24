@@ -23,6 +23,7 @@ import { AnalyticsTab } from './components/analytics-tab';
 import { CustomersTab } from './components/customers-tab';
 import { SettingsTab } from './components/settings-tab';
 import { StaffTab } from './components/staff-tab';
+import { useAppStore } from '@/components/providers';
 
 export default function AdminDashboardPage() {
   const {
@@ -39,14 +40,15 @@ export default function AdminDashboardPage() {
     user
   } = useAdminDashboard();
 
+  const selectedTab = useAppStore((state) => state.selectedTab);
+  const setSelectedTab = useAppStore((state) => state.setSelectedTab);
+
   if (!isAuthenticated || !isAdmin) {
     return null; // Will redirect
   }
 
-  const [activeTab, setActiveTab] = useState('services');
-  
   const renderActiveTab = () => {
-    switch(activeTab) {
+    switch(selectedTab) {
       case 'services':
         return <ServicesTab 
           services={services} 
@@ -88,7 +90,6 @@ export default function AdminDashboardPage() {
       <div className="flex-shrink-0">
         <AdminNavbar user={user} />
       </div>
-      
       <div className="flex flex-1 overflow-hidden ">
         <SidebarProvider>
           <div className="flex w-full h-full">
@@ -97,106 +98,82 @@ export default function AdminDashboardPage() {
                 <SidebarMenu className="space-y-1 px-2">
                   <SidebarMenuItem>
                     <SidebarMenuButton 
-                      isActive={activeTab === 'services'}
-                      onClick={() => setActiveTab('services')}
-                      className={`rounded-md transition-all ${activeTab === 'services' ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted'}`}
+                      isActive={selectedTab === 'services'}
+                      onClick={() => setSelectedTab('services')}
                     >
-                      <Briefcase className="mr-3 h-5 w-5" />
-                      <span>Services</span>
+                      <LayoutDashboard className="w-4 h-4 mr-2" />
+                      Services
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                  
                   <SidebarMenuItem>
                     <SidebarMenuButton 
-                      isActive={activeTab === 'time-slots'}
-                      onClick={() => setActiveTab('time-slots')}
-                      className={`rounded-md transition-all ${activeTab === 'time-slots' ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted'}`}
+                      isActive={selectedTab === 'time-slots'}
+                      onClick={() => setSelectedTab('time-slots')}
                     >
-                      <Clock className="mr-3 h-5 w-5" />
-                      <span>Time Slots</span>
+                      <Clock className="w-4 h-4 mr-2" />
+                      Time Slots
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                  
                   <SidebarMenuItem>
                     <SidebarMenuButton 
-                      isActive={activeTab === 'bookings'}
-                      onClick={() => setActiveTab('bookings')}
-                      className={`rounded-md transition-all ${activeTab === 'bookings' ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted'}`}
+                      isActive={selectedTab === 'bookings'}
+                      onClick={() => setSelectedTab('bookings')}
                     >
-                      <BookOpen className="mr-3 h-5 w-5" />
-                      <span>Bookings</span>
+                      <BookOpen className="w-4 h-4 mr-2" />
+                      Bookings
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                  
                   <SidebarMenuItem>
                     <SidebarMenuButton 
-                      isActive={activeTab === 'calendar'}
-                      onClick={() => setActiveTab('calendar')}
-                      className={`rounded-md transition-all ${activeTab === 'calendar' ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted'}`}
+                      isActive={selectedTab === 'calendar'}
+                      onClick={() => setSelectedTab('calendar')}
                     >
-                      <Calendar className="mr-3 h-5 w-5" />
-                      <span>Calendar</span>
+                      <Calendar className="w-4 h-4 mr-2" />
+                      Calendar
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                  
                   <SidebarMenuItem>
                     <SidebarMenuButton 
-                      isActive={activeTab === 'analytics'}
-                      onClick={() => setActiveTab('analytics')}
-                      className={`rounded-md transition-all ${activeTab === 'analytics' ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted'}`}
+                      isActive={selectedTab === 'analytics'}
+                      onClick={() => setSelectedTab('analytics')}
                     >
-                      <BarChart3 className="mr-3 h-5 w-5" />
-                      <span>Analytics</span>
+                      <BarChart3 className="w-4 h-4 mr-2" />
+                      Analytics
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                  
                   <SidebarMenuItem>
                     <SidebarMenuButton 
-                      isActive={activeTab === 'customers'}
-                      onClick={() => setActiveTab('customers')}
-                      className={`rounded-md transition-all ${activeTab === 'customers' ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted'}`}
+                      isActive={selectedTab === 'customers'}
+                      onClick={() => setSelectedTab('customers')}
                     >
-                      <Users className="mr-3 h-5 w-5" />
-                      <span>Customers</span>
+                      <Users className="w-4 h-4 mr-2" />
+                      Customers
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                  
                   <SidebarMenuItem>
                     <SidebarMenuButton 
-                      isActive={activeTab === 'staff'}
-                      onClick={() => setActiveTab('staff')}
-                      className={`rounded-md transition-all ${activeTab === 'staff' ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted'}`}
+                      isActive={selectedTab === 'staff'}
+                      onClick={() => setSelectedTab('staff')}
                     >
-                      <Users className="mr-3 h-5 w-5" />
-                      <span>Staff</span>
+                      <Briefcase className="w-4 h-4 mr-2" />
+                      Staff
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                  
                   <SidebarMenuItem>
                     <SidebarMenuButton 
-                      isActive={activeTab === 'settings'}
-                      onClick={() => setActiveTab('settings')}
-                      className={`rounded-md transition-all ${activeTab === 'settings' ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted'}`}
+                      isActive={selectedTab === 'settings'}
+                      onClick={() => setSelectedTab('settings')}
                     >
-                      <Settings className="mr-3 h-5 w-5" />
-                      <span>Settings</span>
+                      <Settings className="w-4 h-4 mr-2" />
+                      Settings
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
               </SidebarContent>
             </Sidebar>
-            
-            <SidebarInset>
-              <div className={`container p-8 overflow-y-auto pb-26 ${
-                activeTab === 'analytics' ? 'max-w-none' : 'max-w-6xl'
-              }`}>
-                {loading ? (
-                  <LoadingSpinner message="Loading dashboard..." />
-                ) : (
-                  renderActiveTab()
-                )}
-              </div>
-            </SidebarInset>
+            <main className="flex-1 overflow-y-auto">
+              {renderActiveTab()}
+            </main>
           </div>
         </SidebarProvider>
       </div>
