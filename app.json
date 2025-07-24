@@ -1,0 +1,24 @@
+{
+  "name": "v4",
+  "description": "Next.js application",
+  "repository": "https://github.com/yourusername/v4",
+  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "keywords": ["node", "nextjs", "react"],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "env": {
+    "NODE_ENV": {
+      "description": "Environment setting for the application",
+      "value": "production"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  }
+} 
