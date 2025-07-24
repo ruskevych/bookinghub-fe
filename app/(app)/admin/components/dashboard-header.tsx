@@ -4,7 +4,7 @@ import React from 'react';
 import { Button } from '@/registry/new-york-v4/ui/button';
 import { LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/auth-context';
+import { useAuth } from '@/hooks/use-auth';
 
 interface DashboardHeaderProps {
   title: string;

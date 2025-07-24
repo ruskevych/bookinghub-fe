@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import type { Booking } from '@/lib/api';
 import type { Provider } from '@/types/provider';
+import { useBookings } from '@/hooks/use-bookings';
+import { useAuth } from '@/hooks/use-auth';
 
 interface ProviderInfoProps {
   booking: Booking;
@@ -25,24 +27,11 @@ interface ProviderInfoProps {
 }
 
 export function ProviderInfo({ booking, onMessage, onCall }: ProviderInfoProps) {
-  const [provider, setProvider] = useState<Provider | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadProviderData = async () => {
-      try {
-        const { getExtendedBooking } = await import('@/data/dummy-bookings');
-        const extendedBooking = getExtendedBooking(booking.id);
-        setProvider(extendedBooking?.provider || null);
-      } catch (error) {
-        console.error('Failed to load provider data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProviderData();
-  }, [booking.id]);
+  const { user } = useAuth();
+  const { bookings } = useBookings({ userId: user?.id || '' });
+  const foundBooking = bookings.find((b: Booking) => b.id === booking.id);
+  const provider = foundBooking?.provider || null;
+  const loading = false;
 
   if (loading) {
     return (
@@ -79,8 +68,17 @@ export function ProviderInfo({ booking, onMessage, onCall }: ProviderInfoProps) 
   }
 
   const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase();
+    return name.split(' ').map((n: string) => n[0]).join('').toUpperCase();
   };
+
+  function getLanguageLabel(language: string) {
+    // You can expand this mapping as needed
+    switch (language) {
+      case 'en': return 'English';
+      case 'es': return 'Spanish';
+      default: return language;
+    }
+  }
 
   return (
     <Card>
@@ -206,9 +204,9 @@ export function ProviderInfo({ booking, onMessage, onCall }: ProviderInfoProps) 
             <div>
               <span className="text-gray-600 dark:text-gray-400">Languages spoken:</span>
               <div className="mt-1 space-x-2">
-                {provider.languages?.map((language) => (
+                {provider.languages?.map((language: string) => (
                   <Badge key={language} variant="outline" className="text-xs">
-                    {language}
+                    {getLanguageLabel(language)}
                   </Badge>
                 )) || <span className="text-gray-500">Not specified</span>}
               </div>

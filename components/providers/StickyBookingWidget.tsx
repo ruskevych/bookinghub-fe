@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Provider } from '@/types/provider';
-import { getInitials } from '@/data/dummy-ui-data';
+// TODO: Define getInitials inline or remove if not needed
 
 interface StickyBookingWidgetProps {
   provider: Provider;
@@ -27,7 +27,7 @@ export function StickyBookingWidget({
   onMessage, 
   className 
 }: StickyBookingWidgetProps) {
-  const initials = getInitials(provider.name);
+  const initials = provider.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
   return (
     <div className={cn(

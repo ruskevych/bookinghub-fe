@@ -159,21 +159,17 @@ const PriceRangeSection = memo(function PriceRangeSection({
           <Controller
             name="priceRange"
             control={control}
-            render={({ field }) => {
-              const handleMinPriceChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-                field.onChange([Number(e.target.value), field.value[1]]);
-              }, [field.onChange, field.value]);
-
-              return (
-                <Input
-                  type="number"
-                  value={field.value[0]}
-                  onChange={handleMinPriceChange}
-                  placeholder="$0"
-                  min="0"
-                />
-              );
-            }}
+            render={({ field }) => (
+              <Input
+                type="number"
+                value={field.value[0]}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  field.onChange([Number(e.target.value), field.value[1]]);
+                }}
+                placeholder="$0"
+                min="0"
+              />
+            )}
           />
         </div>
         <div className="space-y-1">
@@ -181,21 +177,17 @@ const PriceRangeSection = memo(function PriceRangeSection({
           <Controller
             name="priceRange"
             control={control}
-            render={({ field }) => {
-              const handleMaxPriceChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-                field.onChange([field.value[0], Number(e.target.value)]);
-              }, [field.onChange, field.value]);
-
-              return (
-                <Input
-                  type="number"
-                  value={field.value[1]}
-                  onChange={handleMaxPriceChange}
-                  placeholder="$500"
-                  min="0"
-                />
-              );
-            }}
+            render={({ field }) => (
+              <Input
+                type="number"
+                value={field.value[1]}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  field.onChange([field.value[0], Number(e.target.value)]);
+                }}
+                placeholder="$500"
+                min="0"
+              />
+            )}
           />
         </div>
       </div>

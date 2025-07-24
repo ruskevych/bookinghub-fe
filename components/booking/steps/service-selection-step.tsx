@@ -26,15 +26,10 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 // Import types and data
-import { BookingData, ExtendedService } from '@/types/booking';
-import { 
-  getAllServices, 
-  getServiceCategories, 
-  filterServicesByCategory, 
-  searchServices,
-  getServicesForProvider,
-  getProviderInfo
-} from '@/data/booking-data';
+import { BookingData, ExtendedService, AddOnService } from '@/types/booking';
+
+import { useServices } from '@/hooks/use-services';
+import { useProvider } from '@/hooks/use-provider';
 
 interface ServiceSelectionStepProps {
   bookingData: BookingData;
@@ -44,7 +39,7 @@ interface ServiceSelectionStepProps {
   isLoading?: boolean;
 }
 
-// Note: Services now come from dummy-providers.ts data
+// Services now come from GraphQL via useServices
 
 export function ServiceSelectionStep({ 
   bookingData, 
@@ -58,19 +53,14 @@ export function ServiceSelectionStep({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Services');
   const [isProviderSpecific, setIsProviderSpecific] = useState(!!preSelectedProviderId);
-  const [providerInfo, setProviderInfo] = useState<any>(null);
+  const { provider: providerInfo } = useProvider({ providerId: preSelectedProviderId || '', includeReviews: false, includeAvailability: false, includeGallery: false });
+  const { services: fetchedServices, loading: servicesLoading, error: servicesError } = useServices();
 
   useEffect(() => {
     loadServices();
   }, [isProviderSpecific, preSelectedProviderId]);
 
-  useEffect(() => {
-    // Load provider info if preSelectedProviderId is provided
-    if (preSelectedProviderId) {
-      const provider = getProviderInfo(preSelectedProviderId);
-      setProviderInfo(provider);
-    }
-  }, [preSelectedProviderId]);
+  // providerInfo is now loaded via useProvider
 
   useEffect(() => {
     // Pre-select service if provided
@@ -85,21 +75,8 @@ export function ServiceSelectionStep({
   const loadServices = async () => {
     setLoading(true);
     try {
-      // Load services from dummy data (replace with real API call in the future)
-      // const response = await serviceService.getServices();
-      // setServices(response.data.items);
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      let servicesToLoad: ExtendedService[];
-      if (isProviderSpecific && preSelectedProviderId) {
-        servicesToLoad = getServicesForProvider(preSelectedProviderId);
-      } else {
-        servicesToLoad = getAllServices();
-      }
-      
-      setServices(servicesToLoad);
+      // Load services from GraphQL
+      setServices(fetchedServices);
     } catch (error) {
       console.error('Failed to load services:', error);
       toast.error('Failed to load services');
@@ -108,9 +85,17 @@ export function ServiceSelectionStep({
     }
   };
 
-  // Filter services using utility functions
-  const categoryFiltered = filterServicesByCategory(services, selectedCategory);
-  const filteredServices = searchServices(categoryFiltered, searchQuery);
+  // Inline filtering and searching
+  const categoryFiltered = selectedCategory === 'All Services'
+    ? services
+    : services.filter((service: ExtendedService) => service.category === selectedCategory);
+  const filteredServices = !searchQuery.trim()
+    ? categoryFiltered
+    : categoryFiltered.filter((service: ExtendedService) =>
+        service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (service.description?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (service.provider_name?.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
 
   const handleServiceSelect = (service: ExtendedService) => {
     updateBookingData({ service });
@@ -140,6 +125,17 @@ export function ServiceSelectionStep({
       </div>
     );
   }
+
+  // Static service categories (replace with GraphQL if needed)
+  const serviceCategories: string[] = [
+    'All Services',
+    'Beauty & Hair',
+    'Automotive',
+    'Wellness & Spa',
+    'Business & Consulting',
+    'Health & Fitness',
+    'Home Services',
+  ];
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -207,7 +203,7 @@ export function ServiceSelectionStep({
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
-                {getServiceCategories().map(category => (
+                {serviceCategories.map((category: string) => (
                   <SelectItem key={category} value={category} className="text-base sm:text-sm">
                     {category}
                   </SelectItem>
@@ -242,7 +238,7 @@ export function ServiceSelectionStep({
               <Avatar className="h-12 w-12 flex-shrink-0">
                 <AvatarImage src={bookingData.service.provider_image} />
                 <AvatarFallback>
-                  {bookingData.service.provider_name?.split(' ').map(n => n[0]).join('') || 'S'}
+                  {bookingData.service.provider_name?.split(' ').map((n: string) => n[0]).join('') || 'S'}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
@@ -284,7 +280,7 @@ export function ServiceSelectionStep({
         </div>
         
         <div className="grid gap-4">
-          {filteredServices.map((service) => (
+          {filteredServices.map((service: ExtendedService) => (
             <Card 
               key={service.id}
               className={cn(
@@ -301,7 +297,7 @@ export function ServiceSelectionStep({
                   <Avatar className="h-16 w-16 flex-shrink-0 mx-auto sm:mx-0">
                     <AvatarImage src={service.provider_image} />
                     <AvatarFallback>
-                      {service.provider_name?.split(' ').map(n => n[0]).join('') || 'S'}
+                      {service.provider_name?.split(' ').map((n: string) => n[0]).join('') || 'S'}
                     </AvatarFallback>
                   </Avatar>
                   
@@ -354,7 +350,7 @@ export function ServiceSelectionStep({
                           Available add-ons:
                         </div>
                         <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-                          {service.add_ons.slice(0, 2).map(addon => (
+                          {service.add_ons.slice(0, 2).map((addon: AddOnService) => (
                             <Badge key={addon.id} variant="secondary" className="text-xs sm:text-sm">
                               {addon.name} (+${addon.price})
                             </Badge>

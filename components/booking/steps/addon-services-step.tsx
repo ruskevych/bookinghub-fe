@@ -232,7 +232,7 @@ export function AddOnServicesStep({
         <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
           <div className="text-center py-4">
             <p className="text-sm sm:text-base text-muted-foreground mb-2 leading-relaxed">
-              Don't need any add-ons? That's perfectly fine!
+              Don&apos;t need any add-ons? That&apos;s perfectly fine!
             </p>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
               You can continue with just your main service or add these later.

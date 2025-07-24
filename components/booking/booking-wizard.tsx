@@ -28,7 +28,7 @@ import {
 
 // Import types
 import { BookingData, BookingStep, BOOKING_STEPS } from '@/types/booking';
-import { bookingService } from '@/lib/api';
+import { useCreateBooking } from '@/hooks/use-create-booking';
 
 interface BookingWizardProps {
   preSelectedServiceId?: string | null;
@@ -153,6 +153,7 @@ export function BookingWizard({
     }
   };
 
+  const { createBooking, loading, error } = useCreateBooking();
   const handleSubmitBooking = async () => {
     setIsLoading(true);
     try {
@@ -163,7 +164,7 @@ export function BookingWizard({
         // Add other fields as needed by your API
       };
 
-      const response = await bookingService.createBooking(bookingPayload);
+      const response = await createBooking(bookingPayload);
       
       toast.success('Booking confirmed! Check your email for details.');
       router.push(`/booking-confirmation?booking_id=${response.data.id}`);

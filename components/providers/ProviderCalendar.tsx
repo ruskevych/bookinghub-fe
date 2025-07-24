@@ -19,7 +19,19 @@ import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { format, addWeeks, subWeeks, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, addDays } from 'date-fns';
 import type { AvailabilitySlot, Service, BusinessHours } from '@/types/provider';
-import { CALENDAR_VIEW_OPTIONS, SLOT_STATUS_CONFIG, formatTimeSlot } from '@/data/dummy-ui-data';
+
+const CALENDAR_VIEW_OPTIONS = [
+  { label: 'Week', value: 'week' },
+  { label: 'Month', value: 'month' },
+];
+const SLOT_STATUS_CONFIG = {
+  available: { label: 'Available', color: 'green' },
+  booked: { label: 'Booked', color: 'red' },
+  pending: { label: 'Pending', color: 'yellow' },
+};
+function formatTimeSlot(slot: AvailabilitySlot) {
+  return `${slot.startTime} - ${slot.endTime}`;
+}
 
 interface ProviderCalendarProps {
   availability: AvailabilitySlot[];

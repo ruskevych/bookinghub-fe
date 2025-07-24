@@ -17,7 +17,7 @@ import {
   XCircle,
   AlertCircle
 } from 'lucide-react';
-import { useAuth } from '@/contexts/auth-context';
+import { useAuth } from '@/hooks/use-auth';
 import { bookingService } from '@/lib/api';
 import type { Booking } from '@/lib/api';
 import { toast } from 'sonner';
@@ -73,9 +73,14 @@ export default function DashboardPage() {
       );
       
       toast.success('Booking cancelled successfully');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to cancel booking:', error);
-      const errorMessage = error.response?.data?.error?.message || 'Failed to cancel booking';
+      let errorMessage = 'Failed to cancel booking';
+      if (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'data' in error.response && error.response.data && typeof error.response.data === 'object' && 'error' in error.response.data && error.response.data.error && typeof error.response.data.error === 'object' && 'message' in error.response.data.error) {
+        errorMessage = (error.response.data.error as { message?: string }).message || errorMessage;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
       toast.error(errorMessage);
     } finally {
       setCancelingBooking(null);

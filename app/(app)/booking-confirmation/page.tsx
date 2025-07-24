@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
-import { useAuth } from '@/contexts/auth-context';
+import { useAuth } from '@/hooks/use-auth';
 import { bookingService } from '@/lib/api';
 import type { Booking } from '@/lib/api';
 
@@ -166,7 +166,7 @@ function BookingConfirmationContent() {
                 onCall={() => {/* TODO: Implement calling */}}
               />
               
-              <LocationMap booking={booking} />
+              <LocationMap location={null} booking={booking} />
             </div>
 
             {/* Right Column - Actions & Quick Info */}
@@ -223,7 +223,7 @@ function BookingConfirmationContent() {
               {/* Next Steps */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">What's Next?</CardTitle>
+                  <CardTitle className="text-lg">What&apos;s Next?</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm">
                   <div className="flex items-start space-x-3">
@@ -241,7 +241,7 @@ function BookingConfirmationContent() {
                     <div>
                       <p className="font-medium">Add to Calendar</p>
                       <p className="text-gray-600 dark:text-gray-400">
-                        Don't forget to add this appointment to your calendar.
+                        Don&apos;t forget to add this appointment to your calendar.
                       </p>
                     </div>
                   </div>

@@ -9,6 +9,7 @@ import { Service, ServiceFormData } from '../types';
 import { ServiceCard } from './service-card';
 import { ServiceForm } from './service-form';
 import { TabContentLayout } from '@/components/layouts/TabContentLayout';
+import { useCreateService } from '@/hooks/use-create-service';
 
 interface ServicesTabProps {
   services: Service[];
@@ -20,15 +21,15 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({ services, setServices,
   const [showServiceDialog, setShowServiceDialog] = useState(false);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
-  const handleCreateService = (data: ServiceFormData) => {
-    const newService: Service = {
-      ...data,
-      id: Date.now().toString(),
-      business_id: businessId,
-    };
-    setServices((prev) => [...prev, newService]);
-    toast.success('Service created successfully');
-    closeDialog();
+  const { createService, loading, error } = useCreateService();
+  const handleCreateService = async (data: ServiceFormData) => {
+    try {
+      await createService(data);
+      // Handle success (e.g., show toast, close modal, refresh list)
+    } catch (err) {
+      // Handle error
+      console.error('Failed to create service:', err);
+    }
   };
 
   const handleUpdateService = (data: ServiceFormData) => {
@@ -95,7 +96,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({ services, setServices,
         ))}
         {services.length === 0 && (
           <div className="col-span-full text-center py-8 text-gray-500">
-            No services found. Click "Add Service" to create one.
+            No services found. Click &quot;Add Service&quot; to create one.
           </div>
         )}
       </div>

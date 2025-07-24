@@ -19,7 +19,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import type { Provider } from '@/types/provider';
-import { getInitials } from '@/data/dummy-ui-data';
+// TODO: Define getInitials inline or remove if not needed
 
 interface ProviderHeaderProps {
   provider: Provider;
@@ -35,7 +35,7 @@ export function ProviderHeader({
   onShare 
 }: ProviderHeaderProps) {
   const isMobile = useIsMobile();
-  const initials = getInitials(provider.name);
+  const initials = provider.name.split(' ').map(name => name[0]).join('').substring(0, 2).toUpperCase();
 
   return (
     <Card className="overflow-hidden">

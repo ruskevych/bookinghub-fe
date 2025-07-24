@@ -2,6 +2,7 @@ import { Service, TimeSlot } from '@/lib/api';
 
 // Extend the existing types with additional booking flow data
 export interface ExtendedService extends Service {
+  category?: string;
   provider_name?: string;
   provider_rating?: number;
   provider_image?: string;

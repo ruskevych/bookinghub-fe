@@ -14,49 +14,32 @@ import {
   Info
 } from 'lucide-react';
 import type { Booking } from '@/lib/api';
+import { useBookings } from '@/hooks/use-bookings';
+import { useAuth } from '@/hooks/use-auth';
+
+interface Location {
+  name?: string;
+  fullAddress?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  serviceRadius?: number;
+  landmarks?: string;
+  parking?: {
+    available?: boolean;
+    type?: string;
+    instructions?: string;
+  };
+  accessibilityInfo?: string;
+}
 
 interface LocationMapProps {
   booking: Booking;
+  location: Location | null;
 }
 
-export function LocationMap({ booking }: LocationMapProps) {
-  const [location, setLocation] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadLocationData = async () => {
-      try {
-        const { getExtendedBooking } = await import('@/data/dummy-bookings');
-        const extendedBooking = getExtendedBooking(booking.id);
-        setLocation(extendedBooking?.location || null);
-      } catch (error) {
-        console.error('Failed to load location data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadLocationData();
-  }, [booking.id]);
-
-  if (loading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl flex items-center space-x-2">
-            <MapPin className="h-5 w-5" />
-            <span>Location & Directions</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-32 bg-gray-200 rounded"></div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
+export function LocationMap({ booking, location }: LocationMapProps) {
 
   if (!location) {
     return (
@@ -75,8 +58,7 @@ export function LocationMap({ booking }: LocationMapProps) {
   }
 
   const getDirectionsUrl = (service: 'google' | 'apple' | 'waze') => {
-    const query = encodeURIComponent(location.fullAddress);
-    
+    const query = encodeURIComponent(location.fullAddress || '');
     switch (service) {
       case 'google':
         return `https://www.google.com/maps/dir/?api=1&destination=${query}`;
@@ -141,7 +123,7 @@ export function LocationMap({ booking }: LocationMapProps) {
             <MapPin className="h-8 w-8 text-gray-400 mx-auto mb-2" />
             <p className="text-sm text-gray-500 dark:text-gray-400">Interactive map view</p>
             <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-              Click 'Get Directions' to open in your preferred map app
+              Click &apos;Get Directions&apos; to open in your preferred map app
             </p>
           </div>
           
@@ -193,7 +175,7 @@ export function LocationMap({ booking }: LocationMapProps) {
         </div>
 
         {/* Parking Information */}
-        {location.parking.available && (
+        {location.parking && (
           <div className="space-y-3">
             <h4 className="font-medium text-gray-900 dark:text-gray-100 flex items-center space-x-2">
               <Car className="h-4 w-4" />

@@ -25,7 +25,7 @@ export function Testimonials() {
                 </div>
                 
                 <blockquote className="text-muted-foreground mb-4 leading-relaxed">
-                  "{testimonial.comment}"
+                  &quot;{testimonial.comment}&quot;
                 </blockquote>
                 
                 <div className="flex items-center">

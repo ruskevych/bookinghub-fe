@@ -26,7 +26,7 @@ import {
   UserCheck,
   PhoneCall
 } from 'lucide-react';
-import { useAuth } from '@/contexts/auth-context';
+import { useAuth } from '@/hooks/use-auth';
 
 // Import types
 import { BookingData } from '@/types/booking';
@@ -60,7 +60,8 @@ export function CustomerInfoStep({
     defaultValues: {
       name: bookingData.customerInfo.name || user?.name || '',
       email: bookingData.customerInfo.email || user?.email || '',
-      phone: bookingData.customerInfo.phone || user?.phone || '',
+      // 'phone' is not present on User from useAuth (GraphQL). Remove or fallback to empty string.
+      phone: bookingData.customerInfo.phone || '',
       emergencyContact: bookingData.customerInfo.emergencyContact || '',
       accessibilityNeeds: bookingData.customerInfo.accessibilityNeeds || '',
     },
@@ -89,7 +90,8 @@ export function CustomerInfoStep({
     if (user) {
       form.setValue('name', user.name || '');
       form.setValue('email', user.email || '');
-      form.setValue('phone', user.phone || '');
+      // 'phone' is not present on User from useAuth (GraphQL). Remove or fallback to empty string.
+      form.setValue('phone', '');
     }
   };
 
@@ -199,7 +201,7 @@ export function CustomerInfoStep({
                         />
                       </FormControl>
                       <FormDescription className="text-sm sm:text-xs">
-                        We'll send your booking confirmation here
+                        We&apos;ll send your booking confirmation here
                       </FormDescription>
                       <FormMessage className="text-sm" />
                     </FormItem>

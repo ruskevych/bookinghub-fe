@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { bookingService } from '@/lib/api';
 import type { Booking } from '@/lib/api';
 import { toast } from 'sonner';
+import { useBookings } from '@/hooks/use-bookings';
+import { useAuth } from '@/hooks/use-auth';
 
 interface UseBookingConfirmationReturn {
   booking: Booking | null;
@@ -32,20 +34,21 @@ export function useBookingConfirmation(): UseBookingConfirmationReturn {
       setLoading(true);
       setError(null);
       
-      // Use dummy data for now - replace with actual API call later
-      const { DUMMY_BOOKINGS } = await import('@/data/dummy-bookings');
-      
-      const booking = DUMMY_BOOKINGS[bookingId];
+      const { user } = useAuth();
+      const { bookings } = useBookings({ userId: user?.id || '' });
+      const booking = bookings.find((b: { id: string }) => b.id === bookingId);
       
       if (booking) {
         setBooking(booking);
       } else {
         setError('Booking not found');
       }
-    } catch (error: any) {
-      console.error('Failed to load booking:', error);
-      setError('Failed to load booking details');
-    } finally {
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError(String(error));
+      }
       setLoading(false);
     }
   }, []);
@@ -58,9 +61,14 @@ export function useBookingConfirmation(): UseBookingConfirmationReturn {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       toast.success('Confirmation email sent successfully!');
-    } catch (error: any) {
-      console.error('Failed to resend confirmation:', error);
-      toast.error('Failed to resend confirmation email');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Failed to resend confirmation:', error);
+        toast.error('Failed to resend confirmation email');
+      } else {
+        console.error('Failed to resend confirmation:', error);
+        toast.error('Failed to resend confirmation email');
+      }
     } finally {
       setIsResending(false);
     }
@@ -119,8 +127,13 @@ Time: ${new Date(booking.start_time).toLocaleTimeString('en-US', {
         await navigator.clipboard.writeText(shareText);
         toast.success('Appointment details copied to clipboard!');
       }
-    } catch (error: any) {
-      if (error.name !== 'AbortError') {
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error.name !== 'AbortError') {
+          console.error('Failed to share booking:', error);
+          toast.error('Failed to share appointment details');
+        }
+      } else {
         console.error('Failed to share booking:', error);
         toast.error('Failed to share appointment details');
       }

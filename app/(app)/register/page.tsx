@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/registry/new-york-v4
 import { Button } from '@/registry/new-york-v4/ui/button';
 import { Input } from '@/registry/new-york-v4/ui/input';
 import { Label } from '@/registry/new-york-v4/ui/label';
-import { useAuth } from '@/contexts/auth-context';
+import { useAuth } from '@/hooks/use-auth';
 import { UserPlus, Mail, Lock, User, Phone } from 'lucide-react';
 
 const registerSchema = z.object({

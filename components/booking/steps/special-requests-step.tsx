@@ -137,7 +137,7 @@ export function SpecialRequestsStep({
             
             <Textarea
               id="special-requests"
-              placeholder="Tell us about any special requirements, preferences, or concerns you'd like us to know about..."
+              placeholder="Tell us about any special requirements, preferences, or concerns you&apos;d like us to know about..."
               value={bookingData.specialRequests || ''}
               onChange={(e) => handleRequestChange(e.target.value)}
               className="min-h-[120px] resize-none text-base sm:text-sm"
@@ -163,7 +163,7 @@ export function SpecialRequestsStep({
         <CardContent className="px-4 sm:px-6">
           <div className="space-y-3 text-sm sm:text-base">
             <p className="text-blue-700 dark:text-blue-300 leading-relaxed">
-              We're committed to providing accessible and safe services for everyone.
+              We&apos;re committed to providing accessible and safe services for everyone.
             </p>
             <ul className="space-y-2 text-blue-600 dark:text-blue-400 text-sm sm:text-base">
               <li>• Wheelchair accessible facilities</li>
@@ -172,7 +172,7 @@ export function SpecialRequestsStep({
               <li>• Flexible scheduling for special needs</li>
             </ul>
             <p className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 mt-3 leading-relaxed">
-              Please let us know if you need any specific accommodations and we'll do our best to help.
+              Please let us know if you need any specific accommodations and we&apos;ll do our best to help.
             </p>
           </div>
         </CardContent>

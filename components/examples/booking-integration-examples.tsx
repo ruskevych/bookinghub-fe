@@ -5,9 +5,10 @@ import { Badge } from '@/registry/new-york-v4/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/registry/new-york-v4/ui/avatar';
 import { Star, MapPin, Clock, DollarSign } from 'lucide-react';
 import { BookNowButton, QuickBookButton, PrimaryBookButton, OutlineBookButton } from '@/components/booking/book-now-button';
+import type { Provider, Service } from '@/types/provider';
 
 // Example: Enhanced Provider Card with Book Now button
-export function ProviderCard({ provider }: { provider: any }) {
+export function ProviderCard({ provider }: { provider: Provider }) {
   return (
     <Card className="group hover:shadow-lg transition-all duration-200">
       <CardContent className="p-6">
@@ -40,7 +41,7 @@ export function ProviderCard({ provider }: { provider: any }) {
             
             {/* Services Preview */}
             <div className="flex flex-wrap gap-2 mb-4">
-              {provider.services?.slice(0, 3).map((service: any) => (
+              {provider.services?.slice(0, 3).map((service: Service) => (
                 <Badge key={service.id} variant="secondary" className="text-xs">
                   {service.name} - ${service.price}
                 </Badge>
@@ -69,7 +70,7 @@ export function ProviderCard({ provider }: { provider: any }) {
 }
 
 // Example: Service Card with specific service booking
-export function ServiceCard({ service }: { service: any }) {
+export function ServiceCard({ service }: { service: Service }) {
   return (
     <Card className="group hover:shadow-lg transition-all duration-200">
       <CardContent className="p-6">
@@ -144,7 +145,7 @@ export function HeroBookingSection() {
 
 // Example: Integration in existing page components
 export function IntegratedBookingExamples() {
-  const mockProvider = {
+  const mockProvider: Provider = {
     id: 'provider1',
     name: 'Elite Hair Studio',
     image: '/avatars/01.png',
@@ -158,7 +159,7 @@ export function IntegratedBookingExamples() {
     ]
   };
 
-  const mockService = {
+  const mockService: Service = {
     id: 'service1',
     name: 'Premium Haircut & Style',
     description: 'Professional haircut with consultation, wash, cut, and styling.',

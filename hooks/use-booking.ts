@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/auth-context';
+import { useAuth } from '@/hooks/use-auth';
 import { serviceService, bookingService } from '@/lib/api';
 import type { Service, TimeSlot, CreateBookingRequest } from '@/lib/api';
 import { toast } from 'sonner';
@@ -152,9 +152,15 @@ export function useBooking(): UseBookingReturn {
         // Redirect to confirmation page
         router.push(`/booking-confirmation?booking_id=${response.data.id}`);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Booking failed:', error);
-      toast.error(error.response?.data?.message || 'Failed to create booking');
+      if (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'data' in error.response && error.response.data && typeof error.response.data === 'object' && 'message' in error.response.data) {
+        toast.error((error.response.data as { message?: string }).message || 'Failed to create booking');
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error('Failed to create booking');
+      }
     } finally {
       setSubmitting(false);
     }

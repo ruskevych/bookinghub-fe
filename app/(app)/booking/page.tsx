@@ -1,16 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useAuth } from '@/contexts/auth-context';
+import { useAuth } from '@/hooks/use-auth';
 import { BookingWizard } from '@/components/booking/booking-wizard';
 import { toast } from 'sonner';
 
-export default function BookingPage() {
+function BookingPageContent() {
   const { isAuthenticated } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  
   // Get initial service from URL params if provided
   const preSelectedServiceId = searchParams.get('service');
   const preSelectedProviderId = searchParams.get('provider');
@@ -36,5 +35,13 @@ export default function BookingPage() {
         preSelectedProviderId={preSelectedProviderId}
       />
     </div>
+  );
+}
+
+export default function BookingPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <BookingPageContent />
+    </Suspense>
   );
 } 

@@ -18,7 +18,11 @@ import {
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import type { Service } from '@/types/provider';
-import { VIEW_MODE_OPTIONS } from '@/data/dummy-ui-data';
+
+const VIEW_MODE_OPTIONS = [
+  { label: 'Featured', value: 'featured' },
+  { label: 'Full', value: 'full' },
+];
 
 interface ProviderServicesProps {
   services: Service[];

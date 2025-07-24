@@ -25,7 +25,7 @@ import { Input } from '@/registry/new-york-v4/ui/input';
 import { Textarea } from '@/registry/new-york-v4/ui/textarea';
 import { Checkbox } from '@/registry/new-york-v4/ui/checkbox';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/registry/new-york-v4/ui/select';
-import { DAYS_OF_WEEK } from '@/data/dummy-ui-data';
+const DAYS_OF_WEEK = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 interface StaffTabProps {
   staff: Staff[];
@@ -33,7 +33,7 @@ interface StaffTabProps {
 }
 
 // Utility for deep cloning
-const deepClone = (obj: any) => JSON.parse(JSON.stringify(obj));
+const deepClone = (obj: unknown) => JSON.parse(JSON.stringify(obj));
 
 // Reusable dialog for create/edit staff
 interface StaffDialogProps {
@@ -423,10 +423,10 @@ const staffSchema = z.object({
 
 type StaffFormType = z.infer<typeof staffSchema>;
 
-function getDefaultAvailability(staff: any) {
+function getDefaultAvailability(staff: Staff) {
   // Map to all days, mark enabled if present in staff.availability
   return DAYS_OF_WEEK.map(day => {
-    const slot = staff.availability.find((s: any) => s.day === day);
+    const slot = staff.availability.find((s: { day: string; start_time: string; end_time: string }) => s.day === day);
     return {
       day,
       enabled: !!slot,

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useRef, useCallback, useEffect, useMemo } from "react";
+import React, { useState, useRef, useCallback, useEffect, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
@@ -30,8 +30,8 @@ import { encodeSearchParams, decodeSearchParams } from "@/components/search/util
 import { Grid3X3, List, SlidersHorizontal, Map} from "lucide-react";
 import { Button } from "@/registry/new-york-v4/ui/button";
 import { Badge } from "@/registry/new-york-v4/ui/badge";
-import { useAuth } from "@/contexts/auth-context";
-// Remove unused imports and icons
+import { useAuth } from "@/hooks/use-auth";
+import { useProviderSearch } from '@/hooks/use-provider-search';
 
 const DEFAULT_FORM_VALUES: SearchFormData = {
   searchQuery: "",
@@ -42,7 +42,15 @@ const DEFAULT_FORM_VALUES: SearchFormData = {
   sortBy: "best-match",
 };
 
-export default function ServiceSearchPage() {
+export default function SearchPageWithSuspense() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ServiceSearchPage />
+    </Suspense>
+  );
+}
+
+function ServiceSearchPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { user, isAuthenticated } = useAuth(); // Get user and isAuthenticated from useAuth
@@ -134,47 +142,25 @@ export default function ServiceSearchPage() {
     return () => clearTimeout(timer);
   }, [debouncedSearch, categories, location, priceRange, availability, sortBy]);
 
-  // Use the optimized search hook for filtering and stats
-  const {
-    searchProviders,
-    calculateSearchStats,
-    getCategorySuggestions,
-    getPriceRangeSuggestions,
-    providers: optimizedProviders
-  } = useOptimizedSearch(mockProviders);
+  // Example usage:
+  const searchInput = {
+    query: '', // Bind to search input value
+    categories: [], // Bind to selected categories
+    location: '', // Bind to location filter
+    priceRange: undefined, // Bind to price range filter
+    availability: [], // Bind to availability filter
+    sortBy: '', // Bind to sort option
+    limit: 10,
+    page: 1,
+  };
+  const { providers, pagination, filters, loading, error, refetch } = useProviderSearch(searchInput);
 
-  const filteredProviders = useMemo(
-    () =>
-      searchProviders(debouncedSearch, {
-        categories,
-        location,
-        priceRange,
-        availability,
-        sortBy,
-      }),
-    [searchProviders, debouncedSearch, categories, location, priceRange, availability, sortBy]
-  );
+  // Use 'providers' for rendering search results, 'filters' for filter options, and handle 'loading' and 'error' states.
 
-  // Suggestions
-  const categorySuggestions = useMemo(() => getCategorySuggestions(filteredProviders), [filteredProviders, getCategorySuggestions]);
-  const priceRangeSuggestions = useMemo(() => getPriceRangeSuggestions(filteredProviders), [filteredProviders, getPriceRangeSuggestions]);
-
-  // Optionally, get stats for advanced integration
-  const stats = useMemo(
-    () =>
-      calculateSearchStats(
-        filteredProviders,
-        debouncedSearch,
-        {
-          categories,
-          location,
-          priceRange,
-          availability,
-          sortBy,
-        }
-      ),
-    [filteredProviders, debouncedSearch, categories, location, priceRange, availability, sortBy, calculateSearchStats]
-  );
+  // Suggestions and stats now come from 'filters' and 'pagination' returned by useProviderSearch
+  const categorySuggestions = filters?.categories || [];
+  const priceRangeSuggestions = filters?.priceRanges || [];
+  const searchStats = pagination || {};
 
   // Memoized active filter count
   const activeFilterCount = useMemo(() => 
@@ -288,16 +274,16 @@ export default function ServiceSearchPage() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h1 className="text-2xl font-bold mb-1">
-                  {searchQuery ? `Results for "${searchQuery}"` : "All Services"}
+                  {searchQuery ? `Results for &quot;${searchQuery}&quot;` : "All Services"}
                 </h1>
                 <p className="text-muted-foreground">
-                  {filteredProviders.length} service{filteredProviders.length !== 1 ? 's' : ''} found
+                  {providers.length} service{providers.length !== 1 ? 's' : ''} found
                 </p>
                 {/* Search Stats */}
                 <div className="flex flex-wrap gap-3 mt-2">
-                  <span className="text-xs text-muted-foreground">Active filters: {stats.activeFilterCount}</span>
-                  {stats.hasActiveFilters && (
-                    <span className="text-xs text-muted-foreground">Filtered by query: "{stats.query}"</span>
+                  <span className="text-xs text-muted-foreground">Active filters: {searchStats.activeFilterCount}</span>
+                  {searchStats.hasActiveFilters && (
+                    <span className="text-xs text-muted-foreground">Filtered by query: &quot;{searchStats.query}&quot;</span>
                   )}
                 </div>
                 {/* Price Range Suggestion */}
@@ -339,7 +325,7 @@ export default function ServiceSearchPage() {
 
             {/* Results */}
             <ResultsGrid
-              providers={filteredProviders}
+              providers={providers}
               viewMode={viewMode}
               isLoading={isLoading}
               onToggleFavorite={toggleFavorite}

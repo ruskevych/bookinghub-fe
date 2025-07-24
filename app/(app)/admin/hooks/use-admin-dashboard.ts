@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/auth-context';
+import { useAuth } from '@/hooks/use-auth';
 import { Service, TimeSlot, Booking, Staff } from '../types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -63,17 +63,17 @@ export const useAdminDashboard = () => {
 
   return {
     services: servicesQuery.data || [],
-    setServices: (updater) => {
-      queryClient.setQueryData(['admin-services', user?.business_id], (prev) => typeof updater === 'function' ? updater(prev || []) : updater);
+    setServices: (updater: Service[] | ((prev: Service[]) => Service[])) => {
+      queryClient.setQueryData(['admin-services', user?.business_id], (prev) => typeof updater === 'function' ? updater(Array.isArray(prev) ? prev : []) : updater);
     },
     timeSlots: timeSlotsQuery.data || [],
-    setTimeSlots: (updater) => {
-      queryClient.setQueryData(['admin-timeSlots', user?.business_id], (prev) => typeof updater === 'function' ? updater(prev || []) : updater);
+    setTimeSlots: (updater: TimeSlot[] | ((prev: TimeSlot[]) => TimeSlot[])) => {
+      queryClient.setQueryData(['admin-timeSlots', user?.business_id], (prev) => typeof updater === 'function' ? updater(Array.isArray(prev) ? prev : []) : updater);
     },
     bookings: bookingsQuery.data || [],
     staff: staffQuery.data || [],
-    setStaff: (updater) => {
-      queryClient.setQueryData(['admin-staff', user?.business_id], (prev) => typeof updater === 'function' ? updater(prev || []) : updater);
+    setStaff: (updater: Staff[] | ((prev: Staff[]) => Staff[])) => {
+      queryClient.setQueryData(['admin-staff', user?.business_id], (prev) => typeof updater === 'function' ? updater(Array.isArray(prev) ? prev : []) : updater);
     },
     loading: servicesQuery.isLoading || timeSlotsQuery.isLoading || bookingsQuery.isLoading || staffQuery.isLoading,
     isAuthenticated,

@@ -7,6 +7,7 @@ import { Button } from '@/registry/new-york-v4/ui/button';
 import { Clock, DollarSign, Edit, Settings, Trash2, Users } from 'lucide-react';
 import { Service } from '../types';
 import { formatDuration } from '../utils';
+import Image from 'next/image';
 
 interface ServiceCardProps {
   service: Service;
@@ -19,7 +20,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ service, onEdit, onDel
     <Card key={service.id} className="overflow-hidden">                  
       {service.photo_url && (
         <div className="w-full h-40 overflow-hidden">
-          <img 
+          <Image 
             src={service.photo_url} 
             alt={service.name} 
             className="w-full h-full object-cover"

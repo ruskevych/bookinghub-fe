@@ -17,7 +17,6 @@ import { toast } from 'sonner';
 
 // Import types and data
 import { BookingData, StaffMember } from '@/types/booking';
-import { getStaffMembersForProvider, getAllStaffMembers } from '@/data/booking-data';
 
 interface StaffSelectionStepProps {
   bookingData: BookingData;
@@ -25,7 +24,36 @@ interface StaffSelectionStepProps {
   isLoading?: boolean;
 }
 
-// Note: Staff data now comes from dummy-providers.ts data
+// TODO: Migrate staff data to GraphQL if not already done
+
+// Temporary mock for staff data
+function getAllStaffMembers(): StaffMember[] {
+  return [
+    {
+      id: 'staff-1',
+      name: 'Alice Johnson',
+      specialties: ['Massage', 'Facial'],
+      rating: 4.8,
+      reviews_count: 120,
+      image: '',
+      available_times: ['9:00 AM', '11:00 AM', '2:00 PM'],
+    },
+    {
+      id: 'staff-2',
+      name: 'Bob Smith',
+      specialties: ['Haircut', 'Shave'],
+      rating: 4.6,
+      reviews_count: 98,
+      image: '',
+      available_times: ['10:00 AM', '1:00 PM', '4:00 PM'],
+    },
+  ];
+}
+
+function getStaffMembersForProvider(businessId: string): StaffMember[] {
+  // For now, just return all staff regardless of businessId
+  return getAllStaffMembers();
+}
 
 export function StaffSelectionStep({ 
   bookingData, 
@@ -37,7 +65,7 @@ export function StaffSelectionStep({
 
   useEffect(() => {
     loadStaff();
-  }, []);
+  }, [bookingData.service?.business_id]);
 
   const loadStaff = async () => {
     setLoading(true);

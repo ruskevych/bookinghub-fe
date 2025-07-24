@@ -21,7 +21,21 @@ import {
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import type { Review } from '@/types/provider';
-import { REVIEW_FILTER_OPTIONS, REVIEW_SORT_OPTIONS } from '@/data/dummy-ui-data';
+
+const REVIEW_FILTER_OPTIONS = [
+  { label: 'All', value: null },
+  { label: '5 stars', value: 5 },
+  { label: '4 stars', value: 4 },
+  { label: '3 stars', value: 3 },
+  { label: '2 stars', value: 2 },
+  { label: '1 star', value: 1 },
+];
+const REVIEW_SORT_OPTIONS = [
+  { label: 'Newest', value: 'newest' },
+  { label: 'Oldest', value: 'oldest' },
+  { label: 'Highest', value: 'highest' },
+  { label: 'Lowest', value: 'lowest' },
+];
 
 interface ProviderReviewsProps {
   reviews: Review[];
@@ -180,7 +194,7 @@ export function ProviderReviews({
             <span className="text-sm font-medium">Sort by:</span>
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
+              onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest' | 'highest' | 'lowest')}
               className="text-sm border rounded px-2 py-1"
             >
               <option value="newest">Newest first</option>

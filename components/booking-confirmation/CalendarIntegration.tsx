@@ -6,6 +6,17 @@ import { Button } from '@/registry/new-york-v4/ui/button';
 import { Calendar, Plus, Download, ExternalLink } from 'lucide-react';
 import { format } from 'date-fns';
 import type { Booking } from '@/lib/api';
+import type { Provider } from '@/types/provider';
+interface Location {
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  serviceRadius: number;
+  fullAddress?: string;
+}
+import { useBookings } from '@/hooks/use-bookings';
+import { useAuth } from '@/hooks/use-auth';
 
 interface CalendarIntegrationProps {
   booking: Booking;
@@ -13,23 +24,11 @@ interface CalendarIntegrationProps {
 }
 
 export function CalendarIntegration({ booking, onAddToCalendar }: CalendarIntegrationProps) {
-  const [providerInfo, setProviderInfo] = useState<any>(null);
-  const [locationInfo, setLocationInfo] = useState<any>(null);
-
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const { getExtendedBooking } = await import('@/data/dummy-bookings');
-        const extendedBooking = getExtendedBooking(booking.id);
-        setProviderInfo(extendedBooking?.provider || null);
-        setLocationInfo(extendedBooking?.location || null);
-      } catch (error) {
-        console.error('Failed to load calendar data:', error);
-      }
-    };
-
-    loadData();
-  }, [booking.id]);
+  const { user } = useAuth();
+  const { bookings } = useBookings({ userId: user?.id || '' });
+  const foundBooking = bookings.find((b: Booking) => b.id === booking.id);
+  const providerInfo = foundBooking?.provider || null;
+  const locationInfo = foundBooking?.location || null;
 
   const generateCalendarEvent = () => {
     const startDate = new Date(booking.start_time);
@@ -228,7 +227,7 @@ END:VCALENDAR`;
           <div className="text-sm text-blue-700 dark:text-blue-200 space-y-1">
             <p>• Set a reminder 30-60 minutes before your appointment</p>
             <p>• Include travel time to arrive 10-15 minutes early</p>
-            <p>• Add the provider's contact information to the event</p>
+            <p>• Add the provider&apos;s contact information to the event</p>
           </div>
         </div>
 

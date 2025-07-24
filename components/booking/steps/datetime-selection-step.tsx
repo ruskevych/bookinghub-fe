@@ -26,7 +26,6 @@ import { toast } from 'sonner';
 // Import types and data
 import { BookingData } from '@/types/booking';
 import { TimeSlot } from '@/lib/api';
-import { generateTimeSlots } from '@/data/booking-data';
 
 interface DateTimeSelectionStepProps {
   bookingData: BookingData;
@@ -34,7 +33,33 @@ interface DateTimeSelectionStepProps {
   isLoading?: boolean;
 }
 
-// Note: Time slots now come from dummy-providers.ts data via generateTimeSlots function
+// TODO: Migrate time slot data to GraphQL if not already done
+
+// Temporary mock for available time slots
+function generateTimeSlots(serviceId: string, date: Date) {
+  // Simple mock: generate 8 slots, every hour from 9am to 5pm
+  const slots = [];
+  const business_id = 'mock-business';
+  const created_at = new Date().toISOString();
+  const updated_at = new Date().toISOString();
+  for (let i = 9; i < 17; i++) {
+    const start = new Date(date);
+    start.setHours(i, 0, 0, 0);
+    const end = new Date(date);
+    end.setHours(i + 1, 0, 0, 0);
+    slots.push({
+      id: `${serviceId}-${i}`,
+      service_id: serviceId,
+      business_id,
+      start_time: start.toISOString(),
+      end_time: end.toISOString(),
+      is_available: true,
+      created_at,
+      updated_at,
+    });
+  }
+  return slots;
+}
 
 export function DateTimeSelectionStep({ 
   bookingData, 
@@ -45,13 +70,6 @@ export function DateTimeSelectionStep({
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [timePreference, setTimePreference] = useState<string>('any');
-
-  useEffect(() => {
-    if (selectedDate) {
-      loadTimeSlots(selectedDate);
-      updateBookingData({ date: selectedDate });
-    }
-  }, [selectedDate, updateBookingData]);
 
   const loadTimeSlots = async (date: Date) => {
     if (!bookingData.service) {
@@ -76,6 +94,13 @@ export function DateTimeSelectionStep({
       setLoadingSlots(false);
     }
   };
+
+  useEffect(() => {
+    if (selectedDate) {
+      loadTimeSlots(selectedDate);
+      updateBookingData({ date: selectedDate });
+    }
+  }, [selectedDate, updateBookingData, loadTimeSlots]);
 
   const formatTimeSlot = (slot: TimeSlot) => {
     const start = new Date(slot.start_time);

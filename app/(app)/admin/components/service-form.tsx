@@ -10,6 +10,7 @@ import { Label } from '@/registry/new-york-v4/ui/label';
 import { Textarea } from '@/registry/new-york-v4/ui/textarea';
 import { Checkbox } from '@/registry/new-york-v4/ui/checkbox';
 import { Service, ServiceFormData } from '../types';
+import Image from 'next/image';
 
 interface ServiceFormProps {
   initialData?: Service;
@@ -102,9 +103,11 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData, onSubmit,
             <>
               {field.value && (
                 <div className="mt-2 rounded-md overflow-hidden border border-gray-200">
-                  <img 
+                  <Image 
                     src={field.value} 
                     alt="Service preview" 
+                    width={128}
+                    height={128}
                     className="w-full h-40 object-cover"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = 'https://placehold.co/400x300?text=Preview+Unavailable';

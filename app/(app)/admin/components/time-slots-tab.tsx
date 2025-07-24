@@ -76,7 +76,7 @@ export const TimeSlotsTab: React.FC<TimeSlotsTabProps> = ({ timeSlots, setTimeSl
         ))}
         {timeSlots.length === 0 && (
           <div className="col-span-full text-center py-8 text-gray-500">
-            No time slots found. Click "Add Time Slot" to create one.
+            No time slots found. Click &quot;Add Time Slot&quot; to create one.
           </div>
         )}
       </div>

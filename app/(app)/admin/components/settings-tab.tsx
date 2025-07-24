@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/new-york-v4/ui/tabs';
 import { toast } from 'sonner';
 import { TabContentLayout } from '@/components/layouts/TabContentLayout';
+import Image from 'next/image';
 
 interface BusinessSettings {
   name: string;
@@ -72,11 +73,15 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ businessId }) => {
     reminderTime: '1h',
   });
 
-  const handleBusinessSettingChange = (field: keyof BusinessSettings, value: any) => {
+  const handleBusinessSettingChange = (field: keyof BusinessSettings, value: string) => {
     setBusinessSettings(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleWorkingHoursChange = (day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday', field: 'isOpen' | 'openTime' | 'closeTime', value: any) => {
+  const handleWorkingHoursChange = (
+    day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday',
+    field: 'isOpen' | 'openTime' | 'closeTime',
+    value: boolean | string
+  ) => {
     setBusinessSettings(prev => ({
       ...prev,
       workingHours: {
@@ -198,11 +203,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ businessId }) => {
                 onChange={(e) => handleBusinessSettingChange('logoUrl', e.target.value)}
               />
               {businessSettings.logoUrl && (
-                <img 
-                  src={businessSettings.logoUrl} 
-                  alt="Business Logo" 
-                  className="w-16 h-16 object-contain mt-2 rounded-md" 
-                />
+                <Image src={businessSettings.logoUrl} alt="Business Logo" width={96} height={96} className="w-24 h-24 object-cover rounded-full border" />
               )}
             </div>
             

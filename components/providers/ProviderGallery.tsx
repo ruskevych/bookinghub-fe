@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { GalleryImage } from '@/types/provider';
-import { GALLERY_CATEGORIES } from '@/data/dummy-ui-data';
+import Image from 'next/image';
 
 interface ProviderGalleryProps {
   gallery: GalleryImage[];
@@ -32,7 +32,7 @@ export function ProviderGallery({ gallery }: ProviderGalleryProps) {
   const galleryCategories = Array.from(new Set(gallery.map(img => img.category)));
   const categories = galleryCategories.length > 0 
     ? ['All', ...galleryCategories]
-    : GALLERY_CATEGORIES;
+    : ['All', 'before_after', 'portfolio', 'workspace', 'certificates'];
   
   // Category display names
   const categoryNames: { [key: string]: string } = {
@@ -77,7 +77,7 @@ export function ProviderGallery({ gallery }: ProviderGalleryProps) {
         <div>
           <h2 className="text-2xl font-bold mb-2">Gallery</h2>
           <p className="text-muted-foreground">
-            View examples of this provider's work
+            View examples of this provider&apos;s work
           </p>
         </div>
         
@@ -86,7 +86,7 @@ export function ProviderGallery({ gallery }: ProviderGalleryProps) {
             <ImageIcon className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
             <h3 className="text-lg font-semibold mb-2">No Images Yet</h3>
             <p className="text-muted-foreground">
-              This provider hasn't uploaded any portfolio images yet.
+              This provider hasn&apos;t uploaded any portfolio images yet.
             </p>
           </CardContent>
         </Card>
@@ -191,9 +191,11 @@ export function ProviderGallery({ gallery }: ProviderGalleryProps) {
             {selectedImageIndex !== null && (
               <div className="flex flex-col">
                 <div className="relative">
-                  <img
+                  <Image
                     src={filteredImages[selectedImageIndex].url}
                     alt={filteredImages[selectedImageIndex].caption || 'Gallery image'}
+                    width={1280} // Assuming a large width for the modal
+                    height={720} // Assuming a large height for the modal
                     className="w-full max-h-[80vh] object-contain"
                   />
                 </div>
@@ -244,12 +246,7 @@ function GalleryImageCard({ image, index, onClick }: GalleryImageCardProps) {
   return (
     <Card className="group cursor-pointer overflow-hidden hover:shadow-lg transition-all duration-200">
       <div className="relative aspect-square">
-        <img
-          src={image.url}
-          alt={image.caption || 'Gallery image'}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          onClick={onClick}
-        />
+        <Image src={image.url} alt={image.caption || 'Gallery image'} width={400} height={192} className="w-full h-48 object-cover rounded-lg" />
         
         {/* Overlay */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />

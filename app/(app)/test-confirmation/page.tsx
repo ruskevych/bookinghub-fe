@@ -11,36 +11,38 @@ import {
   BookingActions 
 } from '@/components/booking-confirmation';
 import type { Booking } from '@/lib/api';
-
-// Use dummy booking data for testing
-const { DUMMY_BOOKINGS } = await import('@/data/dummy-bookings');
-const mockBooking = DUMMY_BOOKINGS['booking-001'];
+import { useBookings } from '@/hooks/use-bookings';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function TestConfirmationPage() {
   const [activeComponent, setActiveComponent] = useState<string>('all');
   const [mockBooking, setMockBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const { bookings } = useBookings({ userId: user?.id || '' });
 
   useEffect(() => {
-    const loadMockData = async () => {
-      try {
-        const { DUMMY_BOOKINGS } = await import('@/data/dummy-bookings');
-        setMockBooking(DUMMY_BOOKINGS['booking-001']);
-      } catch (error) {
-        console.error('Failed to load mock data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (bookings && bookings.length > 0) {
+      setMockBooking(bookings[0]);
+    }
+    setLoading(false);
+  }, [bookings]);
 
-    loadMockData();
-  }, []);
+  const mockLocation = {
+    name: "Test Location",
+    fullAddress: "123 Main St, Test City, TS 12345",
+    address: "123 Main St",
+    city: "Test City",
+    state: "TS",
+    zipCode: "12345",
+    serviceRadius: 10,
+  };
 
   const components = [
     { id: 'all', name: 'All Components', component: null },
     { id: 'details', name: 'Booking Details', component: mockBooking ? <BookingDetails booking={mockBooking} /> : null },
     { id: 'provider', name: 'Provider Info', component: mockBooking ? <ProviderInfo booking={mockBooking} /> : null },
-    { id: 'location', name: 'Location Map', component: mockBooking ? <LocationMap booking={mockBooking} /> : null },
+    { id: 'location', name: 'Location Map', component: mockBooking ? <LocationMap booking={mockBooking} location={mockLocation} /> : null },
     { id: 'calendar', name: 'Calendar Integration', component: mockBooking ? <CalendarIntegration booking={mockBooking} /> : null },
     { id: 'actions', name: 'Booking Actions', component: mockBooking ? <BookingActions booking={mockBooking} /> : null },
   ];
@@ -82,7 +84,7 @@ export default function TestConfirmationPage() {
         <div className="space-y-8">
           <BookingDetails booking={mockBooking} />
           <ProviderInfo booking={mockBooking} />
-          <LocationMap booking={mockBooking} />
+          <LocationMap booking={mockBooking} location={mockLocation} />
           <div className="grid gap-8 lg:grid-cols-2">
             <CalendarIntegration booking={mockBooking} />
             <BookingActions booking={mockBooking} />

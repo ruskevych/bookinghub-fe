@@ -17,7 +17,7 @@ interface CalendarEvent {
   title: string;
   start: Date;
   end: Date;
-  resource: any;
+  resource: Booking | TimeSlot | { [key: string]: unknown };
   type: 'booking' | 'timeSlot';
 }
 
@@ -30,7 +30,8 @@ interface CalendarTabProps {
 export const CalendarTab: React.FC<CalendarTabProps> = ({ bookings, timeSlots, services }) => {
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [showEventDetails, setShowEventDetails] = useState(false);
-  const [viewType, setViewType] = useState<string>('month');
+  type CalendarView = 'month' | 'week' | 'work_week' | 'day' | 'agenda';
+  const [viewType, setViewType] = useState<CalendarView>('month');
   const [filterType, setFilterType] = useState<string>('all');
 
   // Convert bookings and time slots to calendar events
@@ -158,7 +159,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ bookings, timeSlots, s
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Calendar View</h2>
         <div className="flex space-x-4">
-          <Select value={viewType} onValueChange={setViewType}>
+          <Select value={viewType} onValueChange={(value) => setViewType(value as CalendarView)}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="View" />
             </SelectTrigger>
@@ -192,9 +193,9 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ bookings, timeSlots, s
           style={{ height: '100%', width: '100%' }}
           onSelectEvent={handleEventSelect}
           eventPropGetter={eventStyleGetter}
-          view={viewType as any}
-          onView={(view: React.SetStateAction<string>) => setViewType(view)}
-          views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
+          view={viewType}
+          onView={(view) => setViewType(view as CalendarView)}
+          views={['month', 'week', 'work_week', 'day', 'agenda']}
         />
       </div>
 

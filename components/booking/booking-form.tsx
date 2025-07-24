@@ -288,7 +288,7 @@ export function BookingForm({ onScrollToBooking }: BookingFormProps) {
 
               {/* Helper Text */}
               <p className="text-sm text-muted-foreground text-center">
-                We'll help you find the perfect {treatmentType === 'treatments' ? 'treatment' : 'studio'} for your needs
+                We&apos;ll help you find the perfect {treatmentType === 'treatments' ? 'treatment' : 'studio'} for your needs
               </p>
             </form>
           </CardContent>

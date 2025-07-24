@@ -9,7 +9,6 @@ import { Analytics } from "@/components/analytics"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/registry/new-york-v4/ui/sonner"
-import { AuthProvider } from "@/contexts/auth-context"
 
 import "@/styles/globals.css"
 
@@ -71,10 +70,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                if (typeof window !== 'undefined' && localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                   document.querySelector('meta[name="theme-color"]').setAttribute('content', '${META_THEME_COLORS.dark}')
                 }
-                if (localStorage.layout) {
+                if (typeof window !== 'undefined' && localStorage.layout) {
                   document.documentElement.classList.add('layout-' + localStorage.layout)
                 }
               } catch (_) {}
@@ -92,12 +91,10 @@ export default function RootLayout({
         <ThemeProvider>
           <LayoutProvider>
             <ActiveThemeProvider>
-              <AuthProvider>
-                {children}
-                <TailwindIndicator />
-                <Toaster position="top-center" />
-                <Analytics />
-              </AuthProvider>
+              {children}
+              <TailwindIndicator />
+              <Toaster position="top-center" />
+              <Analytics />
             </ActiveThemeProvider>
           </LayoutProvider>
         </ThemeProvider>
